@@ -43,6 +43,7 @@ export default function rdcInvoiceDetails(state = invoiceDetailsState, action) {
       const productsCatalog = action.payload.products;
       const price = getItemPrice(value, productsCatalog);
       return { ...state, [name]: value, newProductPrice: price };
+
     case act.SELECT_PRODUCT:
       const { newProduct } = stateCopy;
       const itemToChange = invoiceItemsCopy.find(item => item.name === newProduct); // checking if this item is already in products table

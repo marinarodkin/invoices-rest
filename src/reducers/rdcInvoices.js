@@ -10,6 +10,7 @@ const invoiceState = {
     { id: 3303, customer: 'Bob Smith', discount: 15, total: 44.15 },
     { id: 3305, customer: 'Mary Jane', discount: 5, total: 26.57 }
   ],
+  invoices2: [],
   isAddingInvoice: false,
   newInvoice: {},
   newCustomer: '',
@@ -34,6 +35,12 @@ export default function rdcInvoices(state = invoiceState, action) {
     total = 0
   } = action.payload ? action.payload : {};
   switch (action.type) {
+    case act.FETCH_INVOICES_SUCCESSFUL:
+      console.log(action.payload, '----rcd invoices action.payload');
+      return {
+        ...state,
+        invoices2: action.payload
+      };
     case act.SET_ADDNEW_ACTIVE:
       const newInvoiceId = getCustomerId();
       return { ...state, isAddingInvoice: !state.isAddingInvoice, newInvoiceId};

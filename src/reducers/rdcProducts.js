@@ -43,6 +43,7 @@ const productState = {
   ],
   productName: '',
   productPrice: '',
+  products2: [],
   productModalShow: false,
   editingProduct: 0
 };
@@ -50,6 +51,12 @@ const productState = {
 export default function rdcProducts(state = productState, action) {
   const productsCopy = [...state.products];
   switch (action.type) {
+    case act.FETCH_PRODUCTS_SUCCESSFUL:
+      console.log(action.payload, '----action.payload');
+      return {
+        ...state,
+        products2: action.payload
+      };
     case act.CHANGE_INPUT_PRODUCT_VALUE:
       const value = action.payload.target.value;
       console.log(action.payload.target.value);

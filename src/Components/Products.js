@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import {  Button, Table } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import {actSetAddNewActive} from "./../reducers/actions_creators.js"
-import {actDeleteProduct, actStartEditingProduct, actProductModalShow, } from "./../reducers/actions_creators";
+import {actDeleteProduct, actStartEditingProduct, actProductModalShow, fetchProducts} from "./../reducers/actions_creators";
 
 
 class Products extends Component {
+
+    componentDidMount() {
+        this.props.fetchProducts();
+    }
 
     deleteProduct = (id) => (event) => {
         event.preventDefault(event);
@@ -66,6 +70,7 @@ const mapDispatchToProps = dispatch => {
         actDeleteProduct: payload => dispatch(actDeleteProduct(payload)),
         actStartEditingProduct: payload => dispatch(actStartEditingProduct(payload)),
         actProductModalShow: payload => dispatch(actProductModalShow(payload)),
+        fetchProducts: payload => dispatch(fetchProducts(payload))
     }
 }
 

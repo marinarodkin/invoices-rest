@@ -4,11 +4,15 @@ import { connect } from 'react-redux'
 import {
   actSetAddNewActive,
   actDeleteInvoice,
-  actStartEditing
+  actStartEditing,
+  fetchInvoices,
 } from './../reducers/actions_creators';
 import AddNew from './AddNew/AddNew';
 
 class Invoices extends Component {
+  componentDidMount() {
+    this.props.fetchInvoices();
+  }
   deleteInvoice = id => event => {
     event.preventDefault(event);
     this.props.actDeleteInvoice({ id });
@@ -76,7 +80,8 @@ const mapDispatchToProps = dispatch => {
   return {
     actSetAddNewActive: payload => dispatch(actSetAddNewActive(payload)),
     actDeleteInvoice: payload => dispatch(actDeleteInvoice(payload)),
-    actStartEditing: payload => dispatch(actStartEditing(payload))
+    actStartEditing: payload => dispatch(actStartEditing(payload)),
+    fetchInvoices: payload => dispatch(fetchInvoices(payload))
   };
 }
 

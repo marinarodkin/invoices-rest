@@ -6,13 +6,14 @@ import {
   actDeleteCustomer,
   actStartEditingCustomer,
   actCustomerModalShow,
-  actGetCustomers
-} from './../reducers/actions_creators';
+  actGetCustomers,
+  fetchCustomers,fetchDeleteCustomers,
+} from "./../reducers/actions_creators";
 
 class Customers extends Component {
   deleteCustomer = id => event => {
     event.preventDefault(event);
-    this.props.actDeleteCustomer(id)
+    this.props.fetchDeleteCustomers(id)
   };
 
   startEditCustomer = id => event => {
@@ -21,8 +22,9 @@ class Customers extends Component {
   }
 
   componentDidMount() {
-    //this.props.actGetCustomers();
+    this.props.fetchCustomers();
   }
+
 
   render() {
     const { customers } = this.props.customers;
@@ -87,7 +89,9 @@ const mapDispatchToProps = dispatch => ({
   actDeleteCustomer: payload => dispatch(actDeleteCustomer(payload)),
   actStartEditingCustomer: payload => dispatch(actStartEditingCustomer(payload)),
   actCustomerModalShow: payload => dispatch(actCustomerModalShow(payload)),
-  actGetCustomers: payload => dispatch(actGetCustomers(payload)),
+  fetchCustomers: payload => dispatch(fetchCustomers(payload)),
+  fetchDeleteCustomers: payload => dispatch(fetchDeleteCustomers(payload)),
+
 
 })
 

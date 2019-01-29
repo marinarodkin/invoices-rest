@@ -1,6 +1,7 @@
 import * as act from './actions';
 import axios from 'axios';
 import getJSON from '../../endpoints';
+import config from '../config.json';
 
 export  function actAddNewInvoice(payload) {
     return { type: act.ADD_NEW_INVOICE, payload };
@@ -100,7 +101,130 @@ export  function actStartEditingProduct(payload) {
 export  function actFinishEditingProduct(payload) {
     return { type: act.FINISH_EDITING_PRODUCT, payload };
 }
+export const fetchProducts = () => {
+    return (dispatch) => {
+        return axios.get(`${config.SERVER_URI}/products`)
+          .then(response => {
+              console.log('-----', response);
+              dispatch(fetchProductsSuccessful(response.data))
+          })
+          .catch(error => {
+              throw(error);
+          });
+    };
+};
 
+export function fetchInvoicesSuccessful(payload) {
+    return { type: act.FETCH_INVOICES_SUCCESSFUL, payload}
+}
+
+export const fetchInvoices = () => {
+    return (dispatch) => {
+        return axios.get(`${config.SERVER_URI}/invoices`)
+          .then(response => {
+              console.log('-----', response);
+              dispatch(fetchInvoicesSuccessful(response.data))
+          })
+          .catch(error => {
+              throw(error);
+          });
+    };
+};
+
+export function fetchInvoiceDetailsSuccessful(payload) {
+    return { type: act.FETCH_INVOICEDETAILS_SUCCESSFUL, payload}
+}
+
+export const fetchInvoiceDetails = () => {
+    return (dispatch) => {
+        return axios.get(`${config.SERVER_URI}/customers`)
+          .then(response => {
+              console.log('-----', response);
+              dispatch(fetchInvoiceDetailsSuccessful(response.data))
+          })
+          .catch(error => {
+              throw(error);
+          });
+    };
+};
+
+/*CUSTOMER BLOCK*/
+
+export function fetchCustomersSuccessful(payload) {
+    return { type: act.FETCH_CUSTOMERS_SUCCESSFUL, payload}
+}
+
+export const fetchCustomers = () => {
+    return (dispatch) => {
+        return axios.get(`${config.SERVER_URI}/customers`)
+          .then(response => {
+              dispatch(fetchCustomersSuccessful(response.data))
+          })
+          .catch(error => {
+              throw(error);
+          });
+    };
+};
+
+
+export function fetchDeleteCustomersSuccessful(data) {
+  const {id} = data;
+  return { type: act.FETCH_DELETE_CUSTOMERS_SUCCESSFUL, payload: {id}}
+}
+
+export const fetchDeleteCustomers = (id) => {
+  return (dispatch) => {
+    return axios.delete(`${config.SERVER_URI}/customers/${id}`)
+      .then(response => {
+         dispatch(fetchDeleteCustomersSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchPutCustomersSuccessful(data) {
+   return { type: act.FETCH_PUT_CUSTOMERS_SUCCESSFUL, payload: {id: data.id, name: data.name, address: data.address, phone: data.phone}}
+}
+
+export const fetchPutCustomers = ({ id, name, address, phone }) => {
+  return (dispatch) => {
+    return axios.post(`${config.SERVER_URI}/customers`, {id, name, address, phone} )
+      .then(response => {
+         dispatch(fetchPutCustomersSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchEditCustomersSuccessful(data) {
+  console.log("fetchEDITCustomersSuccessful(data)", data)
+  return { type: act.FETCH_EDIT_CUSTOMERS_SUCCESSFUL, payload: data}
+}
+
+export const fetchEditCustomers = (payload) => {
+  console.log('start fetchEditCustomers in actions id, customer', payload.id, payload.customer);
+  const {name, address, phone} = payload.customer;
+  return (dispatch) => {
+    return axios.put(`${config.SERVER_URI}/customers/${payload.id}`, { name, address, phone } )
+      .then(response => {
+        console.log('-----fetchEDITCustomers response', response.data);
+        dispatch(fetchEditCustomersSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+/*****************/
+
+export function fetchProductsSuccessful(payload) {
+    return { type: act.FETCH_PRODUCTS_SUCCESSFUL, payload}
+}
 export function actGetCustomers(payload) {
         console.log('start act')
         getJSON().then(result => {
@@ -111,25 +235,3 @@ export function actGetCustomers(payload) {
         })
 
 }
-/*
-export const actGetCustomers = (values) => {
-    console.log('start act')
-    return async dispatch => {
-        try {
-            const response = await axios.get('/api/customers');
-            dispatch(successHandle(response));
-        }
-        catch(error) {
-            dispatch(errorHandle(error));
-        }
-
-        return 'done';
-    }
-}
-
-/*
-async function getJSON(){
-    let json = await axios.get('/api/customers');
-    return json;
-}
-*/

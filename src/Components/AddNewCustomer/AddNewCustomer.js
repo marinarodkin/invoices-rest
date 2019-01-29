@@ -1,15 +1,26 @@
 import React, { Component } from 'react';
 import {Button, FormGroup, ControlLabel, FormControl, Form, Modal} from 'react-bootstrap';
 import { connect } from 'react-redux'
-import {actChangeInputCustomerValue, actChangeInputValue, actAddNewCustomer, actCustomerModalShow, actCustomerModalHide, actFinishEditingCustomer } from "../../reducers/actions_creators";
+import {actChangeInputCustomerValue, actChangeInputValue, actAddNewCustomer, actCustomerModalShow, actCustomerModalHide, actFinishEditingCustomer, fetchPutCustomers, fetchEditCustomers } from "../../reducers/actions_creators";
 import './styles.css'
 
 class AddNewCustomer extends Component {
-    finishEditCustomer = (id) => (event) => {
+    finishEditCustomer = (id, customer) => (event) => {
         event.preventDefault(event);
-        this.props.actFinishEditingCustomer(id)
+        this.props.fetchEditCustomers({id, customer})
     }
+    addNewCustomer = (customer) => (event) => {
+        event.preventDefault(event);
+        this.props.fetchPutCustomers(customer)
+    }
+
     render() {
+        const newCustomer = {
+            id: 5,
+            name: this.props.customers.customerName,
+            address: this.props.customers.customerAddress,
+            phone: this.props.customers.customerPhone
+        }
         return (
             <div className="static-modal add-customer-modal">
                 <Modal show={this.props.customers.customerModalShow} onHide={this.props.actCustomerModalHide}>
@@ -42,7 +53,7 @@ class AddNewCustomer extends Component {
                     </Form>
                     <Modal.Footer>
                         <Button bsStyle="info" className="btn" onClick={this.props.actCustomerModalHide}>Cancel</Button>
-                        <Button bsStyle="info" className="btn" onClick={this.props.customers.editingCustomer === 0 ? this.props.actAddNewCustomer : this.finishEditCustomer(this.props.customers.editingCustomer)}
+                        <Button bsStyle="info" className="btn" onClick={this.props.customers.editingCustomer === 0 ? this.addNewCustomer(newCustomer) : this.finishEditCustomer(this.props.customers.editingCustomer, newCustomer)}
                                 disabled={this.props.customers.customerName === "" || this.props.customers.customerAddress === "" || this.props.customers.customerPhone === ""}>Save Customer</Button>
                     </Modal.Footer>
                 </Modal>
@@ -68,6 +79,8 @@ const mapDispatchToProps = dispatch => {
         actCustomerModalShow: payload => dispatch(actCustomerModalShow(payload)),
         actCustomerModalHide: payload => dispatch(actCustomerModalHide(payload)),
         actFinishEditingCustomer: payload => dispatch(actFinishEditingCustomer(payload)),
+        fetchPutCustomers: payload => dispatch(fetchPutCustomers(payload)),
+        fetchEditCustomers: payload => dispatch(fetchEditCustomers(payload))
 
     }
 
