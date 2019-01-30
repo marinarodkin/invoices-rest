@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Button, FormGroup, ControlLabel, FormControl, Form, Modal} from 'react-bootstrap';
 import { connect } from 'react-redux'
-import {actChangeInputCustomerValue, actChangeInputValue, actAddNewCustomer, actCustomerModalShow, actCustomerModalHide, actFinishEditingCustomer, fetchPutCustomers, fetchEditCustomers } from "../../reducers/actions_creators";
+import {actChangeInputCustomerValue, actChangeInputValue, actCustomerModalShow, actCustomerModalHide, fetchPutCustomers, fetchEditCustomers } from "../../reducers/actions_creators";
 import './styles.css'
 
 class AddNewCustomer extends Component {
@@ -54,7 +54,7 @@ class AddNewCustomer extends Component {
                     <Modal.Footer>
                         <Button bsStyle="info" className="btn" onClick={this.props.actCustomerModalHide}>Cancel</Button>
                         <Button bsStyle="info" className="btn" onClick={this.props.customers.editingCustomer === 0 ? this.addNewCustomer(newCustomer) : this.finishEditCustomer(this.props.customers.editingCustomer, newCustomer)}
-                                disabled={this.props.customers.customerName === "" || this.props.customers.customerAddress === "" || this.props.customers.customerPhone === ""}>Save Customer</Button>
+                                disabled={this.props.customers.customerName === "" || this.props.customers.customerAddress === ""}>Save Customer</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -74,11 +74,9 @@ const mapStateToProps = store => {
 const mapDispatchToProps = dispatch => {
     return {
         actChangeInputCustomerValue: payload => dispatch(actChangeInputCustomerValue(payload)),
-        actAddNewCustomer: payload => dispatch(actAddNewCustomer(payload)),
         actChangeInputValue: payload => dispatch(actChangeInputValue(payload)),
         actCustomerModalShow: payload => dispatch(actCustomerModalShow(payload)),
         actCustomerModalHide: payload => dispatch(actCustomerModalHide(payload)),
-        actFinishEditingCustomer: payload => dispatch(actFinishEditingCustomer(payload)),
         fetchPutCustomers: payload => dispatch(fetchPutCustomers(payload)),
         fetchEditCustomers: payload => dispatch(fetchEditCustomers(payload))
 
@@ -90,8 +88,4 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(AddNewCustomer)
-/*
-<FormControl type="text" placeholder="Input Customer Name" className=""
-onChange={this.props.actChangeInputCustomerValue}
-value={this.props.customers.customerName} name="customerName"/>
-*/
+

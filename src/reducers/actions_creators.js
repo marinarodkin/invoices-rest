@@ -220,18 +220,73 @@ export const fetchEditCustomers = (payload) => {
   };
 };
 
-/*****************/
+/*PRODUCTS BLOCK*/
 
 export function fetchProductsSuccessful(payload) {
     return { type: act.FETCH_PRODUCTS_SUCCESSFUL, payload}
 }
-export function actGetCustomers(payload) {
-        console.log('start act')
-        getJSON().then(result => {
-            return {
-                type: act.GET_CUSTOMERS,
-                payload: result.data
-            }
-        })
 
+export const fetchProducts = () => {
+  return (dispatch) => {
+    return axios.get(`${config.SERVER_URI}/products`)
+      .then(response => {
+        dispatch(fetchProductsSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchDeleteProductsSuccessful(data) {
+  const {id} = data;
+  return { type: act.FETCH_DELETE_PRODUCTS_SUCCESSFUL, payload: {id}}
 }
+
+export const fetchDeleteProducts = (id) => {
+  return (dispatch) => {
+    return axios.delete(`${config.SERVER_URI}/products/${id}`)
+      .then(response => {
+        dispatch(fetchDeleteProductsSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchPutProductsSuccessful(data) {
+  return { type: act.FETCH_PUT_PRODUCTS_SUCCESSFUL, payload: {id: data.id, name: data.name, address: data.address, phone: data.phone}}
+}
+
+export const fetchPutProducts = ({ id, name, address, phone }) => {
+  return (dispatch) => {
+    return axios.post(`${config.SERVER_URI}/products`, {id, name, address, phone} )
+      .then(response => {
+        dispatch(fetchPutCustomersSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchEditProductsSuccessful(data) {
+  console.log("fetchEDITCustomersSuccessful(data)", data)
+  return { type: act.FETCH_EDIT_PRODUCTS_SUCCESSFUL, payload: data}
+}
+
+export const fetchEditProducts = (payload) => {
+  console.log('start fetchEditCustomers in actions id, Products', payload.id, payload.products);
+  const {name, address, phone} = payload.products;
+  return (dispatch) => {
+    return axios.put(`${config.SERVER_URI}/products/${payload.id}`, { name, address, phone } )
+      .then(response => {
+        console.log('-----fetchEDITproducts response', response.data);
+        dispatch(fetchEditProductsSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};

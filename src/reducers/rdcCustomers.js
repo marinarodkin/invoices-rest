@@ -1,11 +1,9 @@
 import * as act from './actions'; // CONSTANTS FROM ACTIONS
 
-import { getCustomerId } from '../functions';
-
 const customerState = {
   /* customers */
   customers: [],
-  customerName: '',
+   customerName: '',
   customerAddress: '',
   customerPhone: '',
   customerModalShow: false,
@@ -15,13 +13,7 @@ const customerState = {
 
 export default function rdcCustomers(state = customerState, action) {
   const customersCopy = [...state.customers];
-  const { customerName = '', customerAddress = '', customerPhone = '' } = state;
   switch (action.type) {
-    case act.FETCH_CUSTOMERS_SUCCESSFUL:
-      return {
-        ...state,
-        customers: action.payload
-      };
     case act.CHANGE_INPUT_CUSTOMER_VALUE:
       const { value = '', name = '' } = action.payload ? action.payload.target : {};
       return { ...state, [name]: value };
@@ -29,15 +21,29 @@ export default function rdcCustomers(state = customerState, action) {
       return { ...state, customerModalShow: true };
     case act.CUSTOMER_MODAL_HIDE:
       return { ...state, customerModalShow: false };
+    case act.FETCH_CUSTOMERS_SUCCESSFUL:
+      return {
+        ...state,
+        customers: action.payload
+      };
     case act.FETCH_DELETE_CUSTOMERS_SUCCESSFUL:
-      console.log(action.payload, '----rcd delete customers action.payload');
       const idForDelete = action.payload.id;
       const updatedCustomers = customersCopy.filter(item => item.id != idForDelete);
       return {
         ...state,
         customers: updatedCustomers
       };
-    case act.START_EDITING_CUSTOMER:
+    case act.FETCH_PUT_CUSTOMERS_SUCCESSFUL:
+      const newCustomers = [...customersCopy, action.payload];
+      return {
+        ...state,
+        customers: newCustomers,
+        customerName: '',
+        customerAddress: '',
+        customerPhone: '',
+        customerModalShow: false
+      };
+      case act.START_EDITING_CUSTOMER:
       const idForEdit = action.payload;
       const customerToEdit = customersCopy.find(item => item.id === idForEdit);
       return {
@@ -48,16 +54,19 @@ export default function rdcCustomers(state = customerState, action) {
         customerPhone: customerToEdit.phone,
         editingCustomer: idForEdit
       };
-    case act.FETCH_PUT_CUSTOMERS_SUCCESSFUL:
-      console.log(action.payload, '----rcd put customers action.payload');
-      const newCustomers = [...customersCopy, action.payload];
+    case act.FETCH_EDIT_CUSTOMERS_SUCCESSFUL:
+      const toEditCustomer = customersCopy.find(item => item.id === action.payload.id);
+      toEditCustomer.name = action.payload.name;
+      toEditCustomer.address = action.payload.address;
+      toEditCustomer.phone = action.payload.phone;
       return {
         ...state,
-        customers: newCustomers,
+        customers: customersCopy,
+        customerModalShow: false,
         customerName: '',
         customerAddress: '',
         customerPhone: '',
-        customerModalShow: false
+        editingCustomer: 0
       };
 
     default:
