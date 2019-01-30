@@ -37,7 +37,6 @@ export default function rdcInvoiceDetails(state = invoiceDetailsState, action) {
   const invoiceDetailsCopy = [...state.invoiceDetails]
   const stateCopy = { ...state};
   const { products = [], name = 0, value = 0, id = 0 } = action.payload ? action.payload : {};
-  console.log('rdcInvoiceDetails products', products, 'name', name, 'value', value);
   switch (action.type) {
     case act.CHANGE_INVOICEITEMS_VALUE: // input-product field
       const productsCatalog = action.payload.products;

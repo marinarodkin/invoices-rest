@@ -6,16 +6,29 @@ import {
     actAddNewProduct,
     actProductModalShow,
     actProductModalHide,
-    actFinishEditingProduct
+    fetchEditProducts,
+    fetchPutProducts,
 } from "../../reducers/actions_creators";
 import './styles.css'
 
 class AddNewProduct extends Component {
-    finishEditProduct = (id) => (event) => {
+
+    finishEditProduct = (id, product) => (event) => {
+        console.log('finishEditProduct product', product)
         event.preventDefault(event);
-        this.props.actFinishEditingProduct(id)
+        this.props.fetchEditProducts({id, product})
     }
+    addNewProduct = (product) => (event) => {
+        console.log('addNewProduct product', product)
+        event.preventDefault(event);
+        this.props.fetchPutProducts(product)
+    }
+
     render() {
+        const newProduct = {
+            name: this.props.products.productName,
+            price: this.props.products.productPrice,
+        }
         return (
             <div className="static-modal add-customer-modal">
                 <Modal show={this.props.products.productModalShow} onHide={this.props.actProductModalHide}>
@@ -40,7 +53,7 @@ class AddNewProduct extends Component {
                     </Form>
                     <Modal.Footer>
                         <Button bsStyle="info" className="btn" onClick={this.props.actProductModalHide}>Cancel</Button>
-                        <Button bsStyle="info" className="btn" onClick={this.props.products.editingProduct === 0 ? this.props.actAddNewProduct : this.finishEditProduct(this.props.products.editingProduct)}
+                        <Button bsStyle="info" className="btn" onClick={this.props.products.editingProduct === 0 ? this.addNewProduct(newProduct) : this.finishEditProduct(this.props.products.editingProduct, newProduct)}
                                 disabled={this.props.products.productName === "" || this.props.products.productPrice === ""}>Save</Button>
                     </Modal.Footer>
                 </Modal>
@@ -61,7 +74,8 @@ const mapDispatchToProps = dispatch => {
       actAddNewProduct: payload => dispatch(actAddNewProduct(payload)),
       actProductModalShow: payload => dispatch(actProductModalShow(payload)),
       actProductModalHide: payload => dispatch(actProductModalHide(payload)),
-      actFinishEditingProduct: payload => dispatch(actFinishEditingProduct(payload)),
+      fetchEditProducts: payload => dispatch(fetchEditProducts(payload)),
+      fetchPutProducts: payload => dispatch(fetchPutProducts(payload)),
   }
 }
 
