@@ -194,19 +194,16 @@ export const fetchPutCustomers = ({ id, name, address, phone }) => {
 };
 
 export function fetchEditCustomersSuccessful(data) {
-  console.log("fetchEDITCustomersSuccessful(data)", data)
-  return { type: act.FETCH_EDIT_CUSTOMERS_SUCCESSFUL, payload: data}
+   return { type: act.FETCH_EDIT_CUSTOMERS_SUCCESSFUL, payload: data}
 }
 
 export const fetchEditCustomers = (payload) => {
-  console.log('starting fetchEditCustomers in actions id, customer', payload.id, payload.newCustomer);
-  const {name, address, phone} = payload.newCustomer;
+   const {name, address, phone} = payload.newCustomer;
   return (dispatch) => {
     return axios.put(`${config.SERVER_URI}/customers/${payload.id}`, { name, address, phone } )
       .then(response => {
         if (response && response.data && response.status === 200) {
-          console.log('-----fetchEDITCustomers response', response.data);
-          dispatch(fetchEditCustomersSuccessful(response.data))
+           dispatch(fetchEditCustomersSuccessful(response.data))
         }
       })
       .catch(error => {

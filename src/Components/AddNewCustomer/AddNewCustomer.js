@@ -1,76 +1,86 @@
 import React, { Component } from 'react';
-import {Button, FormGroup, ControlLabel, FormControl, Form, Modal} from 'react-bootstrap';
-import { connect } from 'react-redux'
-import {actChangeInputCustomerValue, actChangeInputValue, actCustomerModalShow, actCustomerModalHide, fetchPutCustomers, fetchEditCustomers } from "../../reducers/actions_creators";
+import { Button, FormGroup, ControlLabel, FormControl, Form, Modal } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { actChangeInputCustomerValue, actChangeInputValue, actCustomerModalShow, actCustomerModalHide, fetchPutCustomers, fetchEditCustomers } from "../../reducers/actions_creators";
 import './styles.css'
 
 class AddNewCustomer extends Component {
-    state = {
-        customerName: '',
-        customerAddress: '',
-        customerPhone: '',
-        startEditing: 0,
-    }
+  state = {
+    customerName: '',
+    customerAddress: '',
+    customerPhone: ''
+  }
 
-    finishEditCustomer = (id) => (event) => {
-        console.log("finishEditCustomer")
-        event.preventDefault(event);
-        const newCustomer = {
-            name: this.state.customerName,
-            address: this.state.customerAddress,
-            phone: this.state.customerPhone
+
+    componentWillReceiveProps(nextProps){
+        const {editingCustomer, customerName, customerAddress, customerPhone} = nextProps.customers;
+        if (editingCustomer !== 0) {
+            this.setState({
+                customerName: customerName,
+                customerAddress: customerAddress,
+                customerPhone: customerPhone,
+            });
         }
-
-        this.props.fetchEditCustomers({id, newCustomer})
-        this.setState({
-            customerName:'',
-            customerAddress: '',
-            customerPhone: '',
-            startEditing: 0
-        })
     }
-
-    addNewCustomer = () => (event) => {
-        event.preventDefault(event);
-        const newCustomer = {
-            name: this.state.customerName,
-            address: this.state.customerAddress,
-            phone: this.state.customerPhone
-        }
-        this.setState({
-            customerName:'',
-            customerAddress: '',
-            customerPhone: ''
-        })
-        this.props.fetchPutCustomers(newCustomer)
+    /*
+    getDerivedStateFromProps(nextProps, prevState){
+        console.log('getDerivedStateFromProps', nextProps);
     }
+    */
 
     changeInputCustomerValue = ({target: {value, name}}) => {
-        console.log('start action name, value', name, value);
         this.setState({
-           [name]: value
-        })
-    }
+            [name]: value
+        });
+    };
 
-    putEditDataInProps() {
-            console.log('putingEditDataInProps)' )
-        if( this.props.customers.editingCustomer !== 0){
-            this.setState({
-                customerName: this.props.customers.customerToEdit.name,
-                customerAddress: this.props.customers.customerToEdit.address,
-                customerPhone: this.props.customers.customerToEdit.phone,
-                startEditing: 1
-            })
-        }
+  finishEditCustomer = (id) => (event) => {
+    event.preventDefault(event);
+    const newCustomer = {
+      name: this.state.customerName,
+      address: this.state.customerAddress,
+      phone: this.state.customerPhone
     }
+    this.setState({
+      customerName: '',
+      customerAddress: '',
+      customerPhone: ''
+    })
+    this.props.fetchEditCustomers({id, newCustomer})
+  };
 
+  addNewCustomer = () => (event) => {
+    const {customerName, customerAddress, customerPhone } = this.state;
+    event.preventDefault(event);
+    const newCustomer = {
+      name: customerName,
+      address: customerAddress,
+      phone: customerPhone
+    };
+    this.setState({
+      customerName: '',
+      customerAddress: '',
+      customerPhone: ''
+    })
+    this.props.fetchPutCustomers(newCustomer);
+  };
+
+
+
+  cancelEditing = () => {
+    this.setState({
+      customerName: '',
+      customerAddress: '',
+      customerPhone: ''
+    });
+    this.props.actCustomerModalHide();
+  };
+
+
+  //  TODO: fix Eslint
 
     render() {
-        console.log('this.state start', this.state, 'this.props.customers.customerToEdit.name', this.props.customers.customerToEdit.name, 'this.props.customers.editingCustomer', this.props.customers.editingCustomer )
-        if(this.props.customers.editingCustomer !== 0 && this.state.startEditing === 0){
-            this.putEditDataInProps()
-        }
-        return (
+         return (
             <div className="static-modal add-customer-modal">
                 <Modal show={this.props.customers.customerModalShow} onHide={this.props.actCustomerModalHide}>
                     <Modal.Header>
@@ -101,7 +111,7 @@ class AddNewCustomer extends Component {
                         </div>
                     </Form>
                     <Modal.Footer>
-                        <Button bsStyle="info" className="btn" onClick={this.props.actCustomerModalHide}>Cancel</Button>
+                        <Button bsStyle="info" className="btn" onClick={this.cancelEditing}>Cancel</Button>
                         <Button bsStyle="info" className="btn" onClick={this.props.customers.editingCustomer === 0 ? this.addNewCustomer() : this.finishEditCustomer(this.props.customers.editingCustomer)}
                                 disabled={this.state.customerName === "" || this.state.customerAddress === ""}>Save Customer</Button>
                     </Modal.Footer>

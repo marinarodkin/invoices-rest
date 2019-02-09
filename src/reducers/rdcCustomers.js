@@ -3,7 +3,7 @@ import * as act from './actions'; // CONSTANTS FROM ACTIONS
 const customerState = {
   /* customers */
   customers: [],
-   customerName: '',
+  customerName: '',
   customerAddress: '',
   customerPhone: '',
   customerModalShow: false,
@@ -21,7 +21,14 @@ export default function rdcCustomers(state = customerState, action) {
     case act.CUSTOMER_MODAL_SHOW:
       return { ...state, customerModalShow: true };
     case act.CUSTOMER_MODAL_HIDE:
-      return { ...state, customerModalShow: false };
+      return {
+        ...state,
+        customerModalShow: false,
+        customerName: '',
+        customerAddress: '',
+        customerPhone: '',
+        customerToEdit: {},
+        editingCustomer: 0};
     case act.FETCH_CUSTOMERS_SUCCESSFUL:
       return {
         ...state,
@@ -44,7 +51,7 @@ export default function rdcCustomers(state = customerState, action) {
         customerPhone: '',
         customerModalShow: false
       };
-      case act.START_EDITING_CUSTOMER:
+    case act.START_EDITING_CUSTOMER:
       const idForEdit = action.payload;
       const customerToEdit = customersCopy.find(item => item.id === idForEdit);
       return {
