@@ -146,14 +146,15 @@ export const fetchCustomers = () => {
     return (dispatch) => {
         return axios.get(`${config.SERVER_URI}/customers`)
           .then(response => {
+            if (response && response.data && response.status === 200) {
               dispatch(fetchCustomersSuccessful(response.data))
+            }
           })
           .catch(error => {
               throw(error);
           });
     };
 };
-
 
 export function fetchDeleteCustomersSuccessful(data) {
   const {id} = data;
@@ -164,7 +165,9 @@ export const fetchDeleteCustomers = (id) => {
   return (dispatch) => {
     return axios.delete(`${config.SERVER_URI}/customers/${id}`)
       .then(response => {
-         dispatch(fetchDeleteCustomersSuccessful(response.data))
+        if (response && response.data && response.status === 200) {
+          dispatch(fetchDeleteCustomersSuccessful(response.data))
+        }
       })
       .catch(error => {
         throw(error);
@@ -180,7 +183,9 @@ export const fetchPutCustomers = ({ id, name, address, phone }) => {
   return (dispatch) => {
     return axios.post(`${config.SERVER_URI}/customers`, {id, name, address, phone} )
       .then(response => {
-         dispatch(fetchPutCustomersSuccessful(response.data))
+        if (response && response.data && response.status === 200) {
+          dispatch(fetchPutCustomersSuccessful(response.data))
+        }
       })
       .catch(error => {
         throw(error);
@@ -194,13 +199,15 @@ export function fetchEditCustomersSuccessful(data) {
 }
 
 export const fetchEditCustomers = (payload) => {
-  console.log('start fetchEditCustomers in actions id, customer', payload.id, payload.customer);
-  const {name, address, phone} = payload.customer;
+  console.log('starting fetchEditCustomers in actions id, customer', payload.id, payload.newCustomer);
+  const {name, address, phone} = payload.newCustomer;
   return (dispatch) => {
     return axios.put(`${config.SERVER_URI}/customers/${payload.id}`, { name, address, phone } )
       .then(response => {
-        console.log('-----fetchEDITCustomers response', response.data);
-        dispatch(fetchEditCustomersSuccessful(response.data))
+        if (response && response.data && response.status === 200) {
+          console.log('-----fetchEDITCustomers response', response.data);
+          dispatch(fetchEditCustomersSuccessful(response.data))
+        }
       })
       .catch(error => {
         throw(error);

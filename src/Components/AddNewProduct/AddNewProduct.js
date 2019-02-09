@@ -12,7 +12,7 @@ import {
 import './styles.css'
 
 class AddNewProduct extends Component {
-
+//TODO: add prop.types
     finishEditProduct = (id, product) => (event) => {
         console.log('finishEditProduct product', product)
         event.preventDefault(event);

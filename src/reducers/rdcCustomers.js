@@ -8,6 +8,7 @@ const customerState = {
   customerPhone: '',
   customerModalShow: false,
   editingCustomer: 0,
+  customerToEdit: {},
   customerArr: []
 };
 
@@ -52,6 +53,7 @@ export default function rdcCustomers(state = customerState, action) {
         customerName: customerToEdit.name,
         customerAddress: customerToEdit.address,
         customerPhone: customerToEdit.phone,
+        customerToEdit: customerToEdit,
         editingCustomer: idForEdit
       };
     case act.FETCH_EDIT_CUSTOMERS_SUCCESSFUL:
