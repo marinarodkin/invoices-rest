@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Invoices from './Components/Invoices.js'
 import Customers from './Components/Customers.js'
-import AddNew from './Components/AddNew/AddNew.js'
+import AddNew from './Components/AddNew/AddNewInvoice.js'
 import AddNewCustomer from './Components/AddNewCustomer/AddNewCustomer.js'
 import AddNewProduct from './Components/AddNewProduct/AddNewProduct.js'
 import Menu from './Components/Menu.js'

@@ -3,23 +3,29 @@ import { Button, Table } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import {
   actSetAddNewActive,
-  actDeleteInvoice,
   actStartEditing,
-  fetchInvoices,
+  fetchInvoices, fetchDeleteInvoices, fetchInvoiceDetails, fetchOneInvoice,
+  fetchCustomers,
+  fetchProducts,
 } from './../reducers/actions_creators';
-import AddNew from './AddNew/AddNew';
+import AddNewInvoice from './AddNew/AddNewInvoice';
 
 class Invoices extends Component {
+
   componentDidMount() {
     this.props.fetchInvoices();
+    this.props.fetchCustomers();
+    this.props.fetchProducts();
   }
+
   deleteInvoice = id => event => {
     event.preventDefault(event);
-    this.props.actDeleteInvoice({ id });
+    this.props.fetchDeleteInvoices(id)
   };
 
   startEditInvoice = id => event => {
     event.preventDefault(event);
+    this.props.fetchInvoiceDetails(id);
     this.props.actStartEditing({ id });
   };
 
@@ -32,7 +38,7 @@ class Invoices extends Component {
           <div className=" title">Invoices </div>
           {isAddingInvoice ? null : <Button className="col-xs-2" bsStyle="info" onClick={actSetAddNewActive}  >Add New</Button> }
         </div>
-        {isAddingInvoice ? <AddNew /> : null}
+        {isAddingInvoice ? <AddNewInvoice /> : null}
         <Table striped bordered condensed hover>
           <thead>
             <tr>
@@ -48,7 +54,7 @@ class Invoices extends Component {
             {invoices.map(item => (
               <tr key={item.id}>
                 <td className="text-center">{item.id}</td>
-                <td className="text-center">{item.customer}</td>
+                <td className="text-center">{item.customer_id}</td>
                 <td className="text-center">{item.discount}%</td>
                 <td className="text-center">${item.total}</td>
                 <td className="text-center">
@@ -79,9 +85,12 @@ const mapStateToProps = store => {
 const mapDispatchToProps = dispatch => {
   return {
     actSetAddNewActive: payload => dispatch(actSetAddNewActive(payload)),
-    actDeleteInvoice: payload => dispatch(actDeleteInvoice(payload)),
     actStartEditing: payload => dispatch(actStartEditing(payload)),
-    fetchInvoices: payload => dispatch(fetchInvoices(payload))
+    fetchInvoices: payload => dispatch(fetchInvoices(payload)),
+    fetchDeleteInvoices: payload => dispatch(fetchDeleteInvoices(payload)),
+    fetchInvoiceDetails: payload => dispatch(fetchInvoiceDetails(payload)),
+    fetchCustomers: payload => dispatch(fetchCustomers(payload)),
+    fetchProducts: payload => dispatch(fetchProducts(payload)),
   };
 }
 

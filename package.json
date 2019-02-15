@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "node app.js",
-    "dev": "npm start & webpack --watch"
+    "dev": "rm -rf public/js/bundle.js & npm start & webpack --watch"
   },
   "name": "invoices",
   "version": "0.0.2",

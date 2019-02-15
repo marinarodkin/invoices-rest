@@ -73,6 +73,7 @@ export  function actDeleteInvoice(payload) {
 }
 
 export  function actStartEditing(payload) {
+  console.log('actStartEditing')
     return { type: act.START_EDITING, payload };
 }
 
@@ -101,40 +102,6 @@ export  function actStartEditingProduct(payload) {
 export  function actFinishEditingProduct(payload) {
     return { type: act.FINISH_EDITING_PRODUCT, payload };
 }
-
-export function fetchInvoicesSuccessful(payload) {
-    return { type: act.FETCH_INVOICES_SUCCESSFUL, payload}
-}
-
-export const fetchInvoices = () => {
-    return (dispatch) => {
-        return axios.get(`${config.SERVER_URI}/invoices`)
-          .then(response => {
-              console.log('-----', response);
-              dispatch(fetchInvoicesSuccessful(response.data))
-          })
-          .catch(error => {
-              throw(error);
-          });
-    };
-};
-
-export function fetchInvoiceDetailsSuccessful(payload) {
-    return { type: act.FETCH_INVOICEDETAILS_SUCCESSFUL, payload}
-}
-
-export const fetchInvoiceDetails = () => {
-    return (dispatch) => {
-        return axios.get(`${config.SERVER_URI}/customers`)
-          .then(response => {
-              console.log('-----', response);
-              dispatch(fetchInvoiceDetailsSuccessful(response.data))
-          })
-          .catch(error => {
-              throw(error);
-          });
-    };
-};
 
 /*CUSTOMER BLOCK*/
 
@@ -283,3 +250,176 @@ export const fetchEditProducts = (payload) => {
       });
   };
 };
+
+/*INVOICE BLOCK*/
+export function fetchInvoicesSuccessful(payload) {
+  return { type: act.FETCH_INVOICES_SUCCESSFUL, payload}
+}
+
+export const fetchInvoices = () => {
+  return (dispatch) => {
+    return axios.get(`${config.SERVER_URI}/invoices`)
+      .then(response => {
+        console.log('-----', response);
+        dispatch(fetchInvoicesSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchOneInvoiceSuccessful(payload) {
+  return { type: act.FETCH_ONE_INVOICE_SUCCESSFUL, payload}
+}
+
+export const fetchOneInvoice = (id) => {
+  return (dispatch) => {
+    return axios.get(`${config.SERVER_URI}/invoices/${id}`)
+      .then(response => {
+        console.log('-----', response);
+        dispatch(fetchOneInvoiceSuccessful(response.data))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchDeleteInvoicesSuccessful(data) {
+  const {id} = data;
+  return { type: act.FETCH_DELETE_INVOICES_SUCCESSFUL, payload: {id}}
+}
+
+export const fetchDeleteInvoices = (id) => {
+  return (dispatch) => {
+    return axios.delete(`${config.SERVER_URI}/invoices/${id}`)
+      .then(response => {
+        if (response && response.data && response.status === 200) {
+          dispatch(fetchDeleteInvoicesSuccessful(response.data))
+        }
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchPutInvoicesSuccessful(data) {
+  return { type: act.FETCH_PUT_INVOICES_SUCCESSFUL, payload: {id: data.id, customer_id: data.customer_id, discount: data.discount, total: data.total}}
+}
+
+export const fetchPutInvoices = ({ newCustomer, newDiscount, total }) => {
+  console.log('fetchPutInvoices')
+  return (dispatch) => {
+    return axios.post(`${config.SERVER_URI}/invoices`, {customer_id: newCustomer, discount: newDiscount, total: total} )
+      .then(response => {
+        if (response && response.data && response.status === 200) {
+          dispatch(fetchPutInvoicesSuccessful(response.data))
+        }
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchEditInvoicesSuccessful(data) {
+  return { type: act.FETCH_EDIT_INVOICES_SUCCESSFUL, payload: data}
+}
+
+export const fetchEditInvoices = ({ newCustomer, newDiscount, total, id }) => {
+  console.log('fetchEditInvoices',  newCustomer, newDiscount, total, id );
+  return (dispatch) => {
+    return axios.put(`${config.SERVER_URI}/invoices/${id}`, { customer_id: newCustomer, discount: newDiscount, total } )
+      .then(response => {
+        if (response && response.data && response.status === 200) {
+          dispatch(fetchEditInvoicesSuccessful(response.data))
+        }
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+/*INVOICE DETAILS BLOCK*/
+export function fetchInvoiceDetailsSuccessful(items, id) {
+  console.log('fetchInvoiceDetails id ')
+  return { type: act.FETCH_INVOICEDETAILS_SUCCESSFUL, payload: {items, id}}
+}
+
+export const fetchInvoiceDetails = (id) => {
+  console.log('fetchInvoiceDetails id', id)
+  return (dispatch) => {
+    return axios.get(`${config.SERVER_URI}/invoices/${id}/items`)
+      .then(response => {
+        console.log('-----', response);
+        dispatch(fetchInvoiceDetailsSuccessful(response.data, id))
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchDeleteInvoiceDetailsSuccessful(data) {
+  const {id} = data;
+  return { type: act.FETCH_DELETE_INVOICEDETAILS_SUCCESSFUL, payload: {id}}
+}
+
+export const fetchDeleteInvoiceDetails = (payload) => {
+  console.log('fetchDeleteInvoiceDetails', payload)
+  return (dispatch) => {
+    return axios.delete(`${config.SERVER_URI}/invoices/${payload.id}/items/${payload.item.id}`)
+      .then(response => {
+        if (response && response.data && response.status === 200) {
+          dispatch(fetchDeleteInvoiceDetailsSuccessful(response.data))
+        }
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchPutInvoiceDetailsSuccessful(data) {
+  return { type: act.FETCH_PUT_INVOICEDETAILS_SUCCESSFUL, payload: {id: data.id, product_id: data.product_id, quantity: data.quantity}}
+}
+
+export const fetchPutInvoiceDetails = ({ id, item }) => {
+  console.log('fetchPutInvoiceDetails')
+  return (dispatch) => {
+    return axios.post(`${config.SERVER_URI}/invoices/${id}/items`, {product_id: item.name, quantity: item.quantity} )
+      .then(response => {
+        if (response && response.data && response.status === 200) {
+          dispatch(fetchPutInvoiceDetailsSuccessful(response.data))
+        }
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+export function fetchEditInvoiceDetailsSuccessful(data) {
+  console.log('fetchEditInvoiceDetailsSuccessful(data)', data)
+  return { type: act.FETCH_EDIT_INVOICEDETAILS_SUCCESSFUL, payload: data}
+}
+
+export const fetchEditInvoiceDetails = (payload) => {
+  console.log('fetchEditInvoiceDetails = (id, item)', payload);
+  return (dispatch) => {
+    return axios.put(`${config.SERVER_URI}/invoices/${payload.id}/items/${payload.item.id}`, { product_id: payload.item.name, quantity: payload.item.quantity } )
+      .then(response => {
+        if (response && response.data && response.status === 200) {
+          dispatch(fetchEditInvoiceDetailsSuccessful(response.data))
+        }
+      })
+      .catch(error => {
+        throw(error);
+      });
+  };
+};
+
+

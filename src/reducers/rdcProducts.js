@@ -12,7 +12,7 @@ const productState = {
 };
 
 export default function rdcProducts(state = productState, action) {
-  console.log('product')
+
   const productsCopy = [...state.products];
   switch (action.type) {
     case act.PRODUCT_MODAL_SHOW:
@@ -72,7 +72,7 @@ export default function rdcProducts(state = productState, action) {
         editingProduct: 0
       };
     default:
-      console.log(' default')
+
       return state;
   }
 }
