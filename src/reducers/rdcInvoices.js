@@ -1,7 +1,4 @@
-import { combineReducers } from 'redux';
 import * as act from './actions'; // CONSTANTS FROM ACTIONS
-
-import { getItemPrice, getCustomerId } from '../functions';
 
 const invoiceState = {
   /* invoices */
@@ -14,13 +11,15 @@ const invoiceState = {
   newDiscount: 0,
   editingInvoice: 0,
   idForDetails: 0,
-  invoiceToEdit: {}
-}
+  invoiceToEdit: {},
+  currentInvoiceId: 1,
+};
 
+//TODO: ? нужно ли убрать все const из case (согласно требованиям WebStorm)
 
 export default function rdcInvoices(state = invoiceState, action) {
   const invoiceCopy = [...state.invoices];
-  const {id = 0 } = action.payload ? action.payload : {};
+  const { id = 0 } = action.payload ? action.payload : {};
   switch (action.type) {
     case act.SET_ADDNEW_ACTIVE:
       return { ...state, isAddingInvoice: !state.isAddingInvoice};
@@ -32,23 +31,25 @@ export default function rdcInvoices(state = invoiceState, action) {
         newDiscount: 0,
         newTotal: 0,
         newSubTotal: 0,
-        invoiceItems: []
+        invoiceItems: [],
       };
     case act.FETCH_INVOICES_SUCCESSFUL:
       return {
         ...state,
         invoices: action.payload,
       };
-     case act.FETCH_PUT_INVOICES_SUCCESSFUL:
+    case act.FETCH_PUT_INVOICES_SUCCESSFUL:
+      console.log('act.FETCH_PUT_INVOICES_SUCCESSFUL:,action.payload', action.payload);
       const newInvoicesArr = [...invoiceCopy, action.payload];
+      const newCurrentInvoiceId = action.payload.id + 1
       return {
         ...state,
         isAddingInvoice: false,
         invoices: newInvoicesArr,
-        idForDetails: action.payload.id
+        idForDetails: action.payload.id,
+        currentInvoiceId: newCurrentInvoiceId,
       };
     case act.FETCH_EDIT_INVOICES_SUCCESSFUL:
-      console.log('act.FETCH_EDIT_INVOICES_SUCCESSFUL payload', action.payload)
       const toEditInvoice = invoiceCopy.find(item => item.id === id);
       toEditInvoice.customer = action.payload.customer_id;
       toEditInvoice.discount = action.payload.discount;
@@ -63,15 +64,13 @@ export default function rdcInvoices(state = invoiceState, action) {
         editingInvoice: 0
       };
     case act.FETCH_DELETE_INVOICES_SUCCESSFUL:
-      const idForDelete = action.payload.id;
-      const updatedInvoices = invoiceCopy.filter(item => item.id != idForDelete);
+      const updatedInvoices = invoiceCopy.filter(item => item.id !== id);
       return {
         ...state,
         invoices: updatedInvoices
       };
     case act.START_EDITING:
-      const invoicesToEdit = invoiceCopy.find(item => item.id === id)
-      console.log(' act.START_EDITING invoicesToEdit', invoicesToEdit, "id", id)
+      const invoicesToEdit = invoiceCopy.find(item => item.id === id);
       return {
         ...state,
         isAddingInvoice: true,
@@ -79,10 +78,8 @@ export default function rdcInvoices(state = invoiceState, action) {
         newDiscount: invoicesToEdit.discount,
         editingInvoice: id,
         newTotal: invoicesToEdit.total,
-      };
-
+      }
     default:
       return state;
   }
 }
-

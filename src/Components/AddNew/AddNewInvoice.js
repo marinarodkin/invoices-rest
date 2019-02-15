@@ -8,160 +8,163 @@ import {
   fetchPutInvoiceDetails,
   fetchEditInvoices,
   fetchEditInvoiceDetails,
-  fetchDeleteInvoiceDetails
- } from '../../reducers/actions_creators.js';
-import './styles.css'
-import { getItemPrice, getCustomerId } from '../../functions';
-import { fetchPutCustomers } from '../../reducers/actions_creators';
+  fetchDeleteInvoiceDetails,
+ } from '../../reducers/actions_creators';
+import './styles.css';
+import { getItemPrice } from '../../functions';
+import PropTypes from 'prop-types';
 
 class AddNewInvoice extends Component {
+  //TODO: ??? how to make propTypes
+  /*
+  static propTypes = {
+    products: PropTypes.object,
+    fetchPutInvoices: PropTypes.func,
+  };
+  */
+
   state = {
     newCustomer: '',
     newDiscount: 0,
     newTotal: 0,
     newSubTotal: 0,
-    newItem: {},
     invoiceDetails: [],
-    newProduct: {},
+    newProduct: '',
     editingInvoice: 0,
-    prevInvoiceDetails: []
+    prevInvoiceDetails: [],
   };
 
   componentWillReceiveProps(nextProps) {
+    // for editing invoice and invoice details
     const { invoiceDetails, editInvoiceId } = nextProps.invoiceItems;
-    const prevInvoiceDetails = [...invoiceDetails];
+    const { newCustomer, newDiscount, editingInvoice, newTotal } = nextProps.invoices;
+    const prevInvoiceDetails = [...invoiceDetails];  // make copy to compare before sending new data to server
     if (editInvoiceId !== 0) {
-      const mapInvoiceDetails = invoiceDetails.map(item => {
+      const mapInvoiceDetails = invoiceDetails.map((item) => {
         return {
           name: item.product_id,
           quantity: item.quantity,
           price: getItemPrice(item.product_id, this.props.products.products),
           id: item.id,
-        }
+        };
       });
-      this.setState({
+      const discount = newDiscount !== 0 ? (100 - newDiscount) / 100 : 1;
+      const newSubTotal = (newTotal / discount).toFixed(2);
+      this.setState(prevState => ({ ...prevState,
         invoiceDetails: mapInvoiceDetails,
         prevInvoiceDetails,
-
-      });
-      console.log('nextProps invoices', nextProps.invoices)
-      const { newCustomer, newDiscount, editingInvoice } = nextProps.invoices;
-      if (editingInvoice !== 0) {
-
-        this.setState({
-          newCustomer,
-          newDiscount,
-          editingInvoice
-        });
-      }
+        newCustomer,
+        newDiscount,
+        editingInvoice,
+        newSubTotal,
+        newTotal,
+      }));
     }
   }
 
   changeInputValue = ({ target: { value, name } }) => {
+    if (name === 'newDiscount' && value < 0) {
+      return;
+    }
+    if (name === 'newDiscount' && value > 100) {
+      return;
+    }
     this.setState({
       [name]: value,
     });
   };
 
-  changeInvoiceDetailsValue = (e) => {
-    const { value, name} = e.target;
-    const price = getItemPrice(value, this.props.products.products);
-    this.setState(prevState => ({...prevState, newItem: { [name]: value, price: price}, newProduct: value }));
-  }
-
-  selectProduct = () => {
-    console.log("!selectProduct");
+  addProductInInvoice = () => {
     const stateCopy = {...this.state};
     const { newProduct, invoiceDetails } = stateCopy;
-    let countNewSubTotal = 0;
-    console.log("newProduct", newProduct);
-    const itemToChange = invoiceDetails.find(item => item.name === newProduct); // checking if this item is already in products table
-    if (itemToChange) {
+    let newInvoiceItem = {};
+    const itemInInvoiceToChange = invoiceDetails.find(item => item.name === newProduct); // checking if this item is already in invoice products table
+    if (itemInInvoiceToChange) {
       // when this item is already in table
-      itemToChange.quantity = itemToChange.quantity * 1  + 1;
-      countNewSubTotal = (invoiceDetails.reduce((sum, item) => {
-        return sum + item.price * item.quantity }, 0)).toFixed(2);
-      this.setState(prevState => ({...prevState, invoiceDetails: invoiceDetails, newProductTotal: 0, newSubTotal: countNewSubTotal }));
+      itemInInvoiceToChange.quantity = itemInInvoiceToChange.quantity * 1 + 1;
     } else {
       // when this item is the first time selected
-      const newInvoiceItem = {
+      newInvoiceItem = {
         name: newProduct,
         quantity: 1,
-        price: getItemPrice(newProduct, this.props.products.products)
-      }
-      const newInvoiceItems = [...invoiceDetails, newInvoiceItem];
-      countNewSubTotal = (newInvoiceItems.reduce((sum, item) => {
-        return sum + item.price * item.quantity }, 0)).toFixed(2);
-
-      this.setState(prevState => ({...prevState, invoiceDetails: newInvoiceItems, newProductTotal: 0, newSubTotal: countNewSubTotal }));
+        price: getItemPrice(newProduct, this.props.products.products),
+      };
     }
+    const newInvoiceDetails = itemInInvoiceToChange ? invoiceDetails : [...invoiceDetails, newInvoiceItem];
+    const newSubTotal = (newInvoiceDetails.reduce((sum, item) => {
+      return sum + item.price * item.quantity }, 0)).toFixed(2);
+    this.setState(prevState => ({ ...prevState, invoiceDetails: newInvoiceDetails, newProductTotal: 0, newSubTotal }));
   }
+
 
   changeProductQuantity = (event) => {
     event.preventDefault(event);
     const {name, value} = event.target;
-    const stateCopy = {...this.state};
-    const { invoiceDetails } = stateCopy;
-    const productToChange = invoiceDetails.find(item => item.name === name);
-    productToChange.quantity = value;
-    productToChange.total = value * productToChange.price;
-    const countNewSubTotal = (invoiceDetails.reduce((sum, item) => {
+    console.log('value', value)
+    if (value === 0) {
+      this.deleteItemFromList(name);
+    } else {
+      const stateCopy = { ...this.state };
+      const { invoiceDetails } = stateCopy;
+      const productToChange = invoiceDetails.find(item => item.name === name);
+      productToChange.quantity = value;
+      productToChange.total = value * productToChange.price;
+      const newSubTotal = (invoiceDetails.reduce((sum, item) => {
+        return sum + item.price * item.quantity
+      }, 0)).toFixed(2);
+      this.setState(prevState => ({ ...prevState, invoiceDetails, newSubTotal }));
+    }
+  }
+
+  deleteItem = name => (event) => {
+    event.preventDefault(event);
+    this.deleteItemFromList(name);
+
+  }
+
+  deleteItemFromList = (name) => {
+    const newInvoiceDetails = this.state.invoiceDetails.filter(item => item.name !== name);
+    const newSubTotal = (newInvoiceDetails.reduce((sum, item) => {
       return sum + item.price * item.quantity }, 0)).toFixed(2);
-    this.setState(prevState => ({...prevState, invoiceDetails: invoiceDetails, newSubTotal: countNewSubTotal}));
-  }
-
-  deleteItem = (name) => (event) => {
-    event.preventDefault(event);
-    this.setState(prevState => ({...prevState, invoiceDetails: prevState.invoiceDetails.filter(item => item.name !== name)}));
-  }
-
-  finishEditInvoice = (total) => (event) => {
-    event.preventDefault(event);
-    const {newCustomer, newDiscount, editingInvoice} = this.state;
-    this.props.fetchEditInvoices({newCustomer, newDiscount, total, id: editingInvoice});
-    const { invoiceDetails, prevInvoiceDetails } = this.state;
-    const id = editingInvoice;
-    invoiceDetails.forEach(item => {
-      if (prevInvoiceDetails.findIndex(elem => elem.product_id === item.name) === -1){
-        this.props.fetchPutInvoiceDetails({id, item })
-      } else {
-        this.props.fetchEditInvoiceDetails({ id, item })
-      }
-    } )
-    prevInvoiceDetails.forEach(item => {
-      if (invoiceDetails.findIndex(elem => elem.name === item.product_id) === -1){
-        this.props.fetchDeleteInvoiceDetails({ id, item })
-      }
-      }
-    )
-
-
-
-    //this.props.actFinishEditing(id, productsInInvoice, newTotal)
+    this.setState(prevState => ({...prevState, invoiceDetails: newInvoiceDetails, newSubTotal}));
   }
 
   addNewInvoice = (productsInInvoice, total) => (event) => {
     event.preventDefault(event);
     const {newCustomer, newDiscount} = this.state;
     this.props.fetchPutInvoices({newCustomer, newDiscount, total  });
-    const {invoices} = this.props.invoices;
-    const lastInvoice = invoices[invoices.length - 1];
-    const id = lastInvoice.id + 1;
+    const id = this.props.invoices.currentInvoiceId;
     productsInInvoice.forEach(item =>
       this.props.fetchPutInvoiceDetails({id, item }) )
-    this.setState(prevState => ({...prevState}));
+    this.setState(prevState => ({...prevState }));
   }
 
-  //TODO: округление в тотал деталей
-
+  finishEditInvoice = (total) => (event) => {
+    event.preventDefault(event);
+    const {newCustomer, newDiscount, editingInvoice, invoiceDetails, prevInvoiceDetails} = this.state;
+    const id = editingInvoice;
+    this.props.fetchEditInvoices({newCustomer, newDiscount, total, id }); //new invoice to server
+    //invoice details to server
+    invoiceDetails.forEach(item => {
+      if (prevInvoiceDetails.findIndex(elem => elem.product_id === item.name) === -1){
+        this.props.fetchPutInvoiceDetails({id, item })  // items that were added as new
+      } else {
+        this.props.fetchEditInvoiceDetails({ id, item }) // items that were changed
+      }
+    } )
+    prevInvoiceDetails.forEach(item => {
+      if (invoiceDetails.findIndex(elem => elem.name === item.product_id) === -1){
+        this.props.fetchDeleteInvoiceDetails({ id, item }) // items that were deleted
+      }
+      }
+    )
+  }
 
   render() {
-    console.log('render AddInv props!!!', this.props.invoices, this.props.invoiceItems, 'state', this.state );
     const { customers } = this.props.customers;
     const { products } = this.props.products;
     const productsInInvoice = this.state.invoiceDetails || [];
     const discount = this.state.newDiscount != 0 ? (100 - this.state.newDiscount) / 100 : 1;
-    const { newProduct } = this.props.invoiceItems;
     const newTotal = (this.state.newSubTotal * discount).toFixed(2);
 
     return (
@@ -188,7 +191,7 @@ class AddNewInvoice extends Component {
           <label htmlFor='product_id' className='form-label'>Product</label>
           <select className='form-control form-select' id='product_id'
             value={this.state.newProduct}
-            onChange={this.changeInvoiceDetailsValue}
+            onChange={this.changeInputValue}
             name="newProduct"
           >
             <option hidden={true} value={''}>
@@ -200,7 +203,7 @@ class AddNewInvoice extends Component {
               </option>
             )})}
           </select>
-          <Button bsStyle="info" className="btn" onClick={this.selectProduct}
+          <Button bsStyle="info" className="btn" onClick={this.addProductInInvoice}
             disabled={this.state.newProduct === ''}>Add Product</Button>
         </div>
         {productsInInvoice.length < 1 ?
@@ -232,7 +235,7 @@ class AddNewInvoice extends Component {
                                onChange={this.changeProductQuantity}
                                value={item.quantity} name={item.name}/>
                       </td>
-                      <th className="col-xs-1 text-center">{item.quantity * item.price}</th>
+                      <th className="col-xs-1 text-center">{(item.quantity * item.price).toFixed(2)}</th>
                       <td className="text-center">
                         <Button className="" bsStyle="info" onClick={this.deleteItem(item.name)}>
                           Delete
@@ -285,7 +288,6 @@ const mapDispatchToProps = dispatch => {
   return {
     actCancelNewInvoices: payload => dispatch(actCancelNewInvoices(payload)),
     actChangeInputValue: payload => dispatch(actChangeInputValue(payload)),
-
     fetchPutInvoices: payload => dispatch(fetchPutInvoices(payload)),
     fetchPutInvoiceDetails: payload => dispatch(fetchPutInvoiceDetails(payload)),
     fetchEditInvoices: payload => dispatch(fetchEditInvoices(payload)),

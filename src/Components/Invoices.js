@@ -4,13 +4,14 @@ import { connect } from 'react-redux'
 import {
   actSetAddNewActive,
   actStartEditing,
-  fetchInvoices, fetchDeleteInvoices, fetchInvoiceDetails, fetchOneInvoice,
+  fetchInvoices, fetchDeleteInvoices, fetchInvoiceDetails,
   fetchCustomers,
   fetchProducts,
 } from './../reducers/actions_creators';
 import AddNewInvoice from './AddNew/AddNewInvoice';
 
 class Invoices extends Component {
+
 
   componentDidMount() {
     this.props.fetchInvoices();
