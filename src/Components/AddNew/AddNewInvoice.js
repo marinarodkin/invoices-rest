@@ -63,10 +63,8 @@ class AddNewInvoice extends Component {
   }
 
   changeInputValue = ({ target: { value, name } }) => {
-    if (name === 'newDiscount' && value < 0) {
-      return;
-    }
-    if (name === 'newDiscount' && value > 100) {
+    const reg = /^\d+$/;
+    if (name === 'newDiscount' && (value > 100 || value < 0 || !value.match(reg))) {
       return;
     }
     this.setState({
@@ -74,9 +72,12 @@ class AddNewInvoice extends Component {
     });
   };
 
-  addProductInInvoice = () => {
+  addProductInInvoice = ({ target: { value, name } }) => {
+    if (value === '') return;
+    const newProduct = value;
     const stateCopy = {...this.state};
-    const { newProduct, invoiceDetails } = stateCopy;
+    //const { newProduct, invoiceDetails } = stateCopy;
+    const {invoiceDetails } = stateCopy;
     let newInvoiceItem = {};
     const itemInInvoiceToChange = invoiceDetails.find(item => item.name === newProduct); // checking if this item is already in invoice products table
     if (itemInInvoiceToChange) {
@@ -93,15 +94,19 @@ class AddNewInvoice extends Component {
     const newInvoiceDetails = itemInInvoiceToChange ? invoiceDetails : [...invoiceDetails, newInvoiceItem];
     const newSubTotal = (newInvoiceDetails.reduce((sum, item) => {
       return sum + item.price * item.quantity }, 0)).toFixed(2);
-    this.setState(prevState => ({ ...prevState, invoiceDetails: newInvoiceDetails, newProductTotal: 0, newSubTotal }));
+    this.setState(prevState => ({ ...prevState, invoiceDetails: newInvoiceDetails, newProductTotal: 0, newSubTotal, newProduct }));
   }
 
 
   changeProductQuantity = (event) => {
     event.preventDefault(event);
     const {name, value} = event.target;
-    console.log('value', value)
-    if (value === 0) {
+    console.log('value', value);
+    const reg = /^\d+$/;
+    console.log('value.match(reg)', value.match(reg));
+    if (!value.match(reg)) return;
+    if (value == 0) {
+      console.log('delete');
       this.deleteItemFromList(name);
     } else {
       const stateCopy = { ...this.state };
@@ -142,25 +147,33 @@ class AddNewInvoice extends Component {
   finishEditInvoice = (total) => (event) => {
     event.preventDefault(event);
     const {newCustomer, newDiscount, editingInvoice, invoiceDetails, prevInvoiceDetails} = this.state;
-    const id = editingInvoice;
-    this.props.fetchEditInvoices({newCustomer, newDiscount, total, id }); //new invoice to server
+    //const id = editingInvoice;
+    this.props.fetchEditInvoices({newCustomer, newDiscount, total, id: editingInvoice }); //new invoice to server
     //invoice details to server
     invoiceDetails.forEach(item => {
       if (prevInvoiceDetails.findIndex(elem => elem.product_id === item.name) === -1){
-        this.props.fetchPutInvoiceDetails({id, item })  // items that were added as new
+        this.props.fetchPutInvoiceDetails({id: editingInvoice, item })  // items that were added as new
       } else {
-        this.props.fetchEditInvoiceDetails({ id, item }) // items that were changed
-      }
-    } )
+        const prevItem = prevInvoiceDetails.find(elem => elem.product_id === item.name);
+        console.log('prevItem', prevItem, 'item', item)
+        if (item.quantity === prevItem.quantity) {
+          return;
+        }
+          else {
+            this.props.fetchEditInvoiceDetails({ id: editingInvoice, item })
+           } // items that were changed
+         }
+         } )
     prevInvoiceDetails.forEach(item => {
       if (invoiceDetails.findIndex(elem => elem.name === item.product_id) === -1){
-        this.props.fetchDeleteInvoiceDetails({ id, item }) // items that were deleted
+        this.props.fetchDeleteInvoiceDetails({ id: editingInvoice, item }) // items that were deleted
       }
       }
     )
   }
 
   render() {
+    console.log('start');
     const { customers } = this.props.customers;
     const { products } = this.props.products;
     const productsInInvoice = this.state.invoiceDetails || [];
@@ -169,6 +182,8 @@ class AddNewInvoice extends Component {
 
     return (
       <div className="addNew">
+        <h4>Add new invoice</h4>
+        <hr/>
         <div className='form-group'>
           <label htmlFor='customer_id' className='form-label'>Customer</label>
           <select className='form-control form-select'
@@ -191,10 +206,10 @@ class AddNewInvoice extends Component {
           <label htmlFor='product_id' className='form-label'>Product</label>
           <select className='form-control form-select' id='product_id'
             value={this.state.newProduct}
-            onChange={this.changeInputValue}
+            onChange={this.addProductInInvoice}
             name="newProduct"
           >
-            <option hidden={true} value={''}>
+            <option hidden={false} value = '' >
               Select product
             </option>
             {products.map(product =>
@@ -203,8 +218,7 @@ class AddNewInvoice extends Component {
               </option>
             )})}
           </select>
-          <Button bsStyle="info" className="btn" onClick={this.addProductInInvoice}
-            disabled={this.state.newProduct === ''}>Add Product</Button>
+
         </div>
         {productsInInvoice.length < 1 ?
             (< div className="cancel-total col-md-offset-10 col-md-2 text-right">

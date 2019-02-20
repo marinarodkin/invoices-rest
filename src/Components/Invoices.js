@@ -39,7 +39,7 @@ class Invoices extends Component {
           <div className=" title">Invoices </div>
           {isAddingInvoice ? null : <Button className="col-xs-2" bsStyle="info" onClick={actSetAddNewActive}  >Add New</Button> }
         </div>
-        {isAddingInvoice ? <AddNewInvoice /> : null}
+
         <Table striped bordered condensed hover>
           <thead>
             <tr>
@@ -72,6 +72,8 @@ class Invoices extends Component {
             ))}
           </tbody>
         </Table>
+        <hr/>
+        {isAddingInvoice ? <AddNewInvoice /> : null}
       </div>
     );
   }
