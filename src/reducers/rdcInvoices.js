@@ -13,6 +13,7 @@ const invoiceState = {
   idForDetails: 0,
   invoiceToEdit: {},
   currentInvoiceId: 1,
+  invoiceModalShow: false,
 };
 
 //TODO: ? нужно ли убрать все const из case (согласно требованиям WebStorm)
@@ -21,6 +22,10 @@ export default function rdcInvoices(state = invoiceState, action) {
   const invoiceCopy = [...state.invoices];
   const { id = 0 } = action.payload ? action.payload : {};
   switch (action.type) {
+    case act.INVOICE_MODAL_SHOW:
+      return { ...state, invoiceModalShow: true };
+    case act.INVOICE_MODAL_HIDE:
+      return { ...state, invoiceModalShow: false };
     case act.SET_ADDNEW_ACTIVE:
       return { ...state, isAddingInvoice: !state.isAddingInvoice};
     case act.CANCEL_NEW_INVOICE:

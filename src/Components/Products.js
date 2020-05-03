@@ -9,6 +9,7 @@ import {
     fetchProducts,
     fetchDeleteProducts
 } from "./../reducers/actions_creators";
+import './styles.css'
 
 
 class Products extends Component {
@@ -30,20 +31,22 @@ class Products extends Component {
 
         const products = this.props.products.products;
         return (
-            <div className = "" >
+            <div className = "products" >
 
                 <div className= "top-line top-line-inv">
-                    <div className = " title">Products </div>
-                    <Button className="col-xs-2 pull-right" bsStyle="info" onClick={this.props.actProductModalShow}>Add New</Button>
+                    <div className = " title">Инструменты</div>
+                    <Button className="col-xs-3 pull-right" bsStyle="info" onClick={this.props.actProductModalShow}>Добавить Инструмент</Button>
                 </div>
                 <Table striped bordered condensed hover>
                     <thead>
                     <tr>
                         <th className="col-xs-1 text-center">#</th>
-                        <th className="col-xs-3 text-center">Product</th>
-                        <th className="col-xs-1 text-center">Price</th>
-                        <th className="col-xs-1 text-center"></th>
-                        <th className="col-xs-1 text-center"></th>
+                        <th className="col-xs-3 text-center">Наименование</th>
+                        <th className="col-xs-1 text-center">Цена</th>
+                        <th className="col-xs-1 text-center">Залог</th>
+                        <th className="col-xs-1 text-center">За сутки</th>
+                        <th className="col-xs-3 text-center">Категория</th>
+                        <th className="col-xs-3 text-center">Описание</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -52,8 +55,12 @@ class Products extends Component {
                             <td  className ="text-center">{item.id}</td>
                             <td className ="text-center">{item.name}</td>
                             <td className="text-center">{item.price}</td>
-                            <td className="text-center" ><Button className="" bsStyle="info" onClick={this.startEditProduct(item.id)} >Edit</Button></td>
-                            <td className="text-center" ><Button className="" bsStyle="info" onClick={this.deleteProduct(item.id)} >Delete</Button></td>
+                            <td className="text-center">{item.deposit}</td>
+                            <td className="text-center">{item.payment}</td>
+                            <td className="text-center">{item.category}</td>
+                            <td className="text-center">{item.description}</td>
+                            <td className="col-xs-1 border-none" ><Button className="table-button table-button--first" bsStyle="info" onClick={this.startEditProduct(item.id)} ><i className="fas fa-edit"></i></Button></td>
+                            <td className="col-xs-1 border-none" ><Button className="table-button" bsStyle="info" onClick={this.deleteProduct(item.id)} ><i className="fas fa-trash"></i></Button></td>
                         </tr>
                     ))}
                     </tbody>

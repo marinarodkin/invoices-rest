@@ -6,10 +6,10 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Invoices from "./Invoices";
 import Customers from "./Customers";
 import Products from "./Products";
+import AddNew from "./AddNew/AddNewInvoice";
 
 class Menu extends Component {
     render() {
-
 
         return (
             <Router>
@@ -20,16 +20,16 @@ class Menu extends Component {
                             <div className="collapse navbar-collapse" id="navbar-main">
 
                                 <ul className="nav navbar-nav">
-                                    <li><Link to='/'>Invoices</Link></li>
-                                    <li><Link to='/customers'>Customers</Link></li>
-                                    <li><Link to='/products'>Products</Link></li>
-
+                                    <li><Link to='/new'>Новый Заказ</Link></li>
+                                    <li><Link to='/'>Заказы</Link></li>
+                                    <li><Link to='/customers'>Клиенты</Link></li>
+                                    <li><Link to='/products'>Инструменты</Link></li>
                                 </ul>
 
                             </div>
                         </div>
                     </nav>
-
+                    <Route exact path='/new' component={AddNew}/>
                     <Route exact path='/' component={Invoices}/>
                     <Route path='/customers' component={Customers}/>
                     <Route path='/products' component={Products}/>

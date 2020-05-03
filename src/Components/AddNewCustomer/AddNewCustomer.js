@@ -92,24 +92,24 @@ class AddNewCustomer extends Component {
           </Modal.Body>
           <Form className="add-form">
             <FormGroup>
-              <ControlLabel className="">Customer Name:</ControlLabel>
+              <ControlLabel className="col-xs-4">Customer Name:</ControlLabel>
               <FormControl type="text"
                            placeholder={this.props.customers.editingCustomer === 0 ? 'Input Customer Name' : this.props.customers.customerName}
-                           className=""
+                           className="col-xs-8"
                            onChange={this.changeInputCustomerValue} value={this.state.customerName}
                            name="customerName"/>
             </FormGroup>
             <FormGroup>
-              <ControlLabel className="">Customer Address:</ControlLabel>
+              <ControlLabel className="col-xs-4">Customer Address:</ControlLabel>
               <FormControl type="text"
                            placeholder={this.props.customers.editingCustomer === 0 ? 'Input Customer Address' : this.props.customers.customerAddress}
-                           className=""
+                           className="col-xs-8"
                            onChange={this.changeInputCustomerValue} value={this.state.customerAddress}
                            name="customerAddress"/>
             </FormGroup>
             <FormGroup>
-              <ControlLabel className="">Customer Phone:</ControlLabel>
-              <FormControl type="phone"
+              <ControlLabel className="col-xs-4">Customer Phone:</ControlLabel>
+              <FormControl type="phone" className="col-xs-8"
                            placeholder={this.props.customers.editingCustomer === 0 ? 'Input Customer Phone' : this.props.customers.customerPhone}
                            onChange={this.changeInputCustomerValue} value={this.state.customerPhone}
                            name="customerPhone"/>

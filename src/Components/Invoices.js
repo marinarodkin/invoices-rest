@@ -7,8 +7,9 @@ import {
   fetchInvoices, fetchDeleteInvoices, fetchInvoiceDetails,
   fetchCustomers,
   fetchProducts,
+  actInvoiceModalShow, actProductModalShow,
 } from './../reducers/actions_creators';
-import AddNewInvoice from './AddNew/AddNewInvoice';
+import AddNewInvoice from './AddNew/AddNewInvoice11';
 
 class Invoices extends Component {
 
@@ -36,44 +37,50 @@ class Invoices extends Component {
     return (
       <div className="" style={{ marginTop: '20px' }}>
         <div className="top-line top-line-inv">
-          <div className=" title">Invoices </div>
-          {isAddingInvoice ? null : <Button className="col-xs-2" bsStyle="info" onClick={actSetAddNewActive}  >Add New</Button> }
+          <div className=" title">Заказы </div>
+          <Button
+              className="col-xs-3 pull-right"
+              bsStyle="info"
+              onClick={this.props.actInvoiceModalShow}
+          >
+            Добавить заказ
+          </Button>
         </div>
 
         <Table striped bordered condensed hover>
           <thead>
             <tr>
               <th className="col-xs-2 text-center">#</th>
-              <th className="col-xs-6 text-center">Customer</th>
-              <th className="col-xs-1 text-center">Discount</th>
-              <th className="col-xs-1 text-center">Total</th>
-              <th className="col-xs-1 text-center" />
-              <th className="col-xs-1 text-center" />
+              <th className="col-xs-6 text-center">Клиент</th>
+              <th className="col-xs-1 text-center">Инструмент</th>
+              <th className="col-xs-1 text-center">Количество дней</th>
+              <th className="col-xs-1 text-center">Залог</th>
+              <th className="col-xs-1 text-center">Оплата</th>
             </tr>
           </thead>
           <tbody>
             {invoices.map(item => (
               <tr key={item.id}>
                 <td className="text-center">{item.id}</td>
-                <td className="text-center">{item.customer_id}</td>
-                <td className="text-center">{item.discount}%</td>
-                <td className="text-center">${item.total}</td>
-                <td className="text-center">
-                  <Button className="" bsStyle="info" onClick={this.startEditInvoice(item.id)}>
-                    Edit
+                <td className="text-center">имя клиента</td>
+                <td className="text-center">название инструмента</td>
+                <td className="text-center">2 </td>
+                <td className="text-center">111111</td>
+                <td className="text-center">111111</td>
+                <td className="col-xs-1 border-none">
+                  <Button className="table-button table-button--first" bsStyle="info" onClick={this.startEditInvoice(item.id)}>
+                    Редактировать
                   </Button>
                 </td>
-                <td className="text-center">
-                  <Button className="" bsStyle="info" onClick={this.deleteInvoice(item.id)}>
-                    Delete
+                <td className="col-xs-1 border-none">
+                  <Button className="table-button" bsStyle="info" onClick={this.deleteInvoice(item.id)}>
+                    Удалить
                   </Button>
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
-        <hr/>
-        {isAddingInvoice ? <AddNewInvoice /> : null}
       </div>
     );
   }
@@ -94,6 +101,7 @@ const mapDispatchToProps = dispatch => {
     fetchInvoiceDetails: payload => dispatch(fetchInvoiceDetails(payload)),
     fetchCustomers: payload => dispatch(fetchCustomers(payload)),
     fetchProducts: payload => dispatch(fetchProducts(payload)),
+    actInvoiceModalShow: payload => dispatch(actInvoiceModalShow(payload)),
   };
 }
 

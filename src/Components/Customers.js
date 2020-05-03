@@ -9,6 +9,7 @@ import {
   actGetCustomers,
   fetchCustomers,fetchDeleteCustomers,
 } from "./../reducers/actions_creators";
+import './styles.css'
 
 class Customers extends Component {
   deleteCustomer = id => event => {
@@ -32,41 +33,39 @@ class Customers extends Component {
     return (
       <div className="">
         <div className="top-line top-line-inv">
-          <div className=" title">Customers </div>
+          <div className=" title">Клиенты</div>
           <Button
-            className="col-xs-2 pull-right"
+            className="col-xs-3 pull-right"
             bsStyle="info"
             onClick={this.props.actCustomerModalShow}
           >
-            Add New
+            Добавить клиента
           </Button>
         </div>
         <Table striped bordered condensed hover>
           <thead>
             <tr>
               <th className="col-xs-1 text-center">#</th>
-              <th className="col-xs-1 text-center">Customer</th>
-              <th className="col-xs-3 text-center">Address</th>
-              <th className="col-xs-2 text-center">Phone</th>
-              <th className="col-xs-1 text-center" />
-              <th className="col-xs-1 text-center" />
+              <th className="col-xs-1 text-center">Клиент</th>
+              <th className="col-xs-3 text-center">Адрес</th>
+              <th className="col-xs-2 text-center">Телефон</th>
             </tr>
           </thead>
           <tbody>
             {customers.map(item => (
               <tr key={item.id}>
-                <td className="text-center">{item.id}</td>
-                <td className="text-center">{item.name}</td>
-                <td className="text-center">{item.address}</td>
-                <td className="text-center">{item.phone}</td>
-                <td className="text-center">
-                  <Button className="" bsStyle="info" onClick={this.startEditCustomer(item.id)}>
-                    Edit
+                <td className="col-xs-1 text-center">{item.id}</td>
+                <td className="col-xs-3 text-center">{item.name}</td>
+                <td className="col-xs-3 text-center">{item.address}</td>
+                <td className="col-xs-2 text-center">{item.phone}</td>
+                <td className="col-xs-1 border-none" >
+                  <Button className="table-button table-button--first" bsStyle="info" onClick={this.startEditCustomer(item.id)}>
+                    <i className="fas fa-edit"></i>
                   </Button>
                 </td>
-                <td className="text-center">
-                  <Button className="" bsStyle="info" onClick={this.deleteCustomer(item.id)}>
-                    Delete
+                <td className="col-xs-1 border-none">
+                  <Button className="table-button" bsStyle="info" onClick={this.deleteCustomer(item.id)}>
+                    <i className="fas fa-trash"></i>
                   </Button>
                 </td>
               </tr>

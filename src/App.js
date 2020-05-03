@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import Invoices from './Components/Invoices.js'
 import Customers from './Components/Customers.js'
-import AddNew from './Components/AddNew/AddNewInvoice.js'
+import AddNew from './Components/AddNew/AddNewInvoice11.js'
 import AddNewCustomer from './Components/AddNewCustomer/AddNewCustomer.js'
 import AddNewProduct from './Components/AddNewProduct/AddNewProduct.js'
+import AddNewInvoice from './Components/AddNew/AddNewInvoice.js'
 import Menu from './Components/Menu.js'
 //import Main from './Components/Main.js'
 import Main from './Main.js'
@@ -18,18 +19,15 @@ class App extends Component {
     return (
       <div className="App app-container">
 
-          <PageHeader className= "page-header">Invoices App</PageHeader>
+          <PageHeader className= "page-header">Айсберг Прокат</PageHeader>
           <Menu/>
-
-
           <AddNewCustomer/>
           <AddNewProduct/>
+          <AddNewInvoice/>
           </div>
     );
   }
 }
-
-
 
 const mapStateToProps = store => {
     return {

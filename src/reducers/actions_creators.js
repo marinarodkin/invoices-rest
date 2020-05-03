@@ -40,6 +40,14 @@ export function actProductModalHide(payload) {
   return { type: act.PRODUCT_MODAL_HIDE, payload };
 }
 
+export function actInvoiceModalShow(payload) {
+  return { type: act.INVOICE_MODAL_SHOW, payload };
+}
+
+export function actInvoiceModalHide(payload) {
+  return { type: act.INVOICE_MODAL_HIDE, payload };
+}
+
 export function actStartEditing(payload) {
   return { type: act.START_EDITING, payload };
 }
@@ -138,6 +146,7 @@ export function fetchProductsSuccessful(payload) {
 }
 
 export const fetchProducts = () => {
+  console.log("fetch product")
   return (dispatch) => {
     return axios.get(`${config.SERVER_URI}/products`)
       .then(response => {
@@ -169,14 +178,16 @@ export const fetchDeleteProducts = (id) => {
 export function fetchPutProductsSuccessful(data) {
   return {
     type: act.FETCH_PUT_PRODUCTS_SUCCESSFUL,
-    payload: { id: data.id, name: data.name, price: data.price },
+    payload: { id: data.id, name: data.name, price: data.price, category: data.category, deposit: data.deposit, description: data.description, payment: data.payment },
   };
 }
 
-export const fetchPutProducts = ({ name, price }) => {
+export const fetchPutProducts = ({ name, price, category, deposit, description, payment }) => {
+  console.log("{ name, price, category, deposit, description, payment }", name, price, category, deposit, description, payment)
   return (dispatch) => {
-    return axios.post(`${config.SERVER_URI}/products`, { name, price } )
+    return axios.post(`${config.SERVER_URI}/products`, { name, price, category, deposit, description, payment } )
       .then(response => {
+        console.log( "response.data", response);
         dispatch(fetchPutProductsSuccessful(response.data))
       })
       .catch(error => {

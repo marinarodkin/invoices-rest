@@ -39,7 +39,19 @@ Product = sequelize.define('products', {
   },
   price: {
     type: Sequelize.DECIMAL
-  }
+  },
+    deposit: {
+        type: Sequelize.DECIMAL
+    },
+    payment: {
+        type: Sequelize.DECIMAL
+    },
+   category: {
+        type: Sequelize.STRING
+    },
+    description: {
+        type: Sequelize.STRING
+    },
 });
 
 Invoice = sequelize.define('invoices', {
@@ -80,46 +92,78 @@ sequelize.sync({
     force: true
 }).then(function() {
   Customer.create({
-    name: "Mark Benson",
-    address: "353 Rochester St, Rialto FL 43250",
-    phone: "555-534-2342"
+    name: "Черепанов Василий Яковлевич",
+    address: "Мира 163-17",
+    phone: "8-919-1181765"
   });
 
   Customer.create({
-    name: "Bob Smith",
-    address: "215 Market St, Dansville CA 94325",
-    phone: "555-534-2342"
+    name: "Акинин Андрей Петрович",
+    address: "Ленина 17-42",
+    phone: "8-937-2136634"
   });
 
   Customer.create({
-    name: "John Draper",
-    address: "890 Main St, Fontana IL 31450",
-    phone: "555-534-2342"
+    name: "Котляров Дмитрий Степанович",
+    address: "Индустриальная 14-51",
+    phone: "8-960-8399219"
+  });
+
+    Customer.create({
+        name: "Яшкин Сергей Владимирович",
+        address: "Степана Разина 34-91",
+        phone: "8-937-7799211"
+    });
+
+    Customer.create({
+        name: "Юсупов Андрей Алекксеевич",
+        address: "Ворошилова 104-211",
+        phone: "8-903-8799334"
+    });
+
+  Product.create({
+    name: "Бензобур ADA GROUNDDRILL-7",
+    price: 9000,
+      deposit: 3000,
+      payment: 1000,
+      description: "Смесь 1:25, шнек до 250 мм.",
+      category: "Мотобуры"
   });
 
   Product.create({
-    name: "Parachute Pants",
-    price: 29.99
+    name: "Пила торцовочная DeWolt DW 713",
+    price: 23200,
+      deposit: 3000,
+      payment: 1000,
+      description: "Диск 250 мм.,переходное кольцо,ключ, пылесборник",
+      category: "Режущий инструмент"
   });
 
   Product.create({
-    name: "Phone Holder",
-    price: 9.99
+    name: "Перфоратор MAKITA HR 2470",
+    price: 8000,
+      deposit: 3000,
+      payment: 1000,
+      description: "Смесь 1:25, шнек до 250 мм.",
+      category: "Мотобуры"
   });
 
   Product.create({
-    name: "Pet Rock",
-    price: 5.99
+    name: "Сварочный аппарат, инвертор РЕСАНТА 220",
+    price: 7000,
+      deposit: 3000,
+      payment: 1000,
+      description: "Тип патрона - SDS Plus",
+      category: "Перфораторы"
   });
 
   Product.create({
-    name: "Egg Timer",
-    price: 15.99
-  });
-
-  Product.create({
-    name: "Neon Green Hat",
-    price: 21.99
+    name: "Шлифмашинка ленточная MAKITA 9910",
+    price: 8000,
+      deposit: 3000,
+      payment: 1000,
+      description: "Ширина ленты 75 мм",
+      category: "Обработка материалов"
   });
 
 }).catch(function(e) {
@@ -179,7 +223,7 @@ app.route('/api/products')
     })
   })
   .post(function(req, res) {
-        var product = Product.build(_.pick(req.body, ['name', 'price']));
+        var product = Product.build(_.pick(req.body, ['name', 'price', 'category', 'deposit', 'description', 'payment']));
     product.save().then(function(product){
       res.json(product);
     });
@@ -193,7 +237,7 @@ app.route('/api/products/:product_id')
   })
   .put(function(req, res) {
     Product.findById(req.params.product_id).then(function(product) {
-            product.update(_.pick(req.body, ['name', 'price'])).then(function(product) {
+            product.update(_.pick(req.body, ['name', 'price', 'category', 'deposit', 'description', 'payment'])).then(function(product) {
         res.json(product);
       });
     });

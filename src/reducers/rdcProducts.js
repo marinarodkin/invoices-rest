@@ -6,6 +6,10 @@ const productState = {
   products: [],
   productName: '',
   productPrice: '',
+  productDeposit: '',
+  productPayment: '',
+  productCategory: '',
+  productDescription: '',
   products2: [],
   productModalShow: false,
   editingProduct: 0
@@ -45,6 +49,10 @@ export default function rdcProducts(state = productState, action) {
         products: newProducts,
         productName: '',
         productPrice: '',
+        productDeposit: '',
+        productPayment: '',
+        productCategory: '',
+        productDescription: '',
         productModalShow: false
       };
 
@@ -56,6 +64,10 @@ export default function rdcProducts(state = productState, action) {
         productModalShow: true,
         productName: productToEdit.name,
         productPrice: productToEdit.price,
+        productDeposit: productToEdit.deposit,
+        productPayment: productToEdit.payment,
+        productCategory: productToEdit.category,
+        productDescription: productToEdit.description,
         editingProduct: idForEdit
       };
     case act.FETCH_EDIT_PRODUCTS_SUCCESSFUL:
@@ -69,6 +81,10 @@ export default function rdcProducts(state = productState, action) {
         productModalShow: false,
         productName: '',
         productPrice: '',
+        productDeposit: '',
+        productPayment: '',
+        productCategory: '',
+        productDescription: '',
         editingProduct: 0
       };
     default:
