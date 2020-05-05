@@ -108,3 +108,14 @@
 .add-btns{
     margin-left: auto;
 }
+
+.select-add-invoice,
+.input-add-invoice {
+    width: 75% !important;
+}
+
+.label-add-invoice {
+    width: 25% !important;
+    padding-left: 0 !important;;
+    padding-right: 0 !important;;
+}

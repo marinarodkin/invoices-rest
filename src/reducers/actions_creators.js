@@ -61,6 +61,10 @@ export function actStartEditingProduct(payload) {
   return { type: act.START_EDITING_PRODUCT, payload };
 }
 
+export function actIsInvoiceMenu(payload) {
+  return { type: act.IS_INVOICE_MENU, payload}
+}
+
 /* CUSTOMER BLOCK */
 
 export function fetchCustomersSuccessful(payload) {
@@ -253,14 +257,16 @@ export const fetchDeleteInvoices = (id) => {
 export function fetchPutInvoicesSuccessful(data) {
   return {
     type: act.FETCH_PUT_INVOICES_SUCCESSFUL,
-    payload: { id: data.id, customer_id: data.customer_id, discount: data.discount, total: data.total },
+    payload: { invoiceId: data.invoiceId, customer: data.customer, product: data.product, days: data.days, deposit: data.deposit, payment: data.payment, total: data.total },
   };
 }
 
-export const fetchPutInvoices = ({ newCustomer, newDiscount, total }) => {
+export const fetchPutInvoices = ({ invoiceId, customer, product, days, deposit, payment, total }) => {
+  console.log('fetch put', invoiceId, customer, product, days, deposit, payment, total )
   return (dispatch) => {
-    return axios.post(`${config.SERVER_URI}/invoices`, {customer_id: newCustomer, discount: newDiscount, total: total} )
+    return axios.post(`${config.SERVER_URI}/invoices`, {invoiceId, customer, product, days, deposit, payment, total} )
       .then(response => {
+        console.log('responce', response)
         if (response && response.data && response.status === 200) {
           dispatch(fetchPutInvoicesSuccessful(response.data))
         }

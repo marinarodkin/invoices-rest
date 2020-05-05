@@ -20,7 +20,8 @@ class AddNewInvoice extends Component {
         product: '',
         days: '',
         deposit: '',
-        payment: ''
+        payment: '',
+        total: '',
     };
 
     finishEditProduct = (id, product) => (event) => {
@@ -31,25 +32,25 @@ class AddNewInvoice extends Component {
 
 
     changeInputValue = ({ target: { value, name } }) => {
-        const reg = /^\d+$/;
-        if (name === 'newDiscount' && (value > 100 || value < 0 || !value.match(reg))) {
-            return;
-        }
         this.setState({
             [name]: value,
         });
+        console.log("change value state", this.state);
     };
 
     addNewInvoice = () => (event) => {
         const { invoiceId, customer, product, days, deposit, payment } = this.state;
         event.preventDefault(event);
+        const { products } = this.props.products;
+        const currentProduct = products.find(item => item.name === product)
         const newInvoice = {
             id: invoiceId,
             customer,
             product,
             days,
-            deposit,
-            payment
+            deposit: currentProduct.deposit,
+            payment: currentProduct.payment,
+            total: currentProduct.payment * days
         };
         this.setState({
             invoiceId: '',
@@ -57,9 +58,12 @@ class AddNewInvoice extends Component {
             product: '',
             days: '',
             deposit: '',
-            payment: ''
+            payment: '',
+            total: ''
         });
+        console.log('newInvoice', newInvoice);
         this.props.fetchPutInvoices(newInvoice);
+        this.props.actInvoiceModalHide();
     };
 
     cancelEditing = () => {
@@ -69,7 +73,8 @@ class AddNewInvoice extends Component {
             product: '',
             days: '',
             deposit: '',
-            payment: ''
+            payment: '',
+            total: ''
         });
         this.props.actInvoiceModalHide();
     };
@@ -87,14 +92,14 @@ class AddNewInvoice extends Component {
                     <Modal.Body>
 
                         <div className='form-group'>
-                            <label htmlFor='customer_id' className='form-label col-xs-4'>Клиент</label>
-                            <select className='form-control form-select col-xs-8'
+                            <label htmlFor='customer_id' className='form-label label-add-invoice'>Клиент</label>
+                            <select className='form-control form-select select-add-invoice'
                                     id='customer_id'
-                                    value={this.state.newCustomer}
+                                    value={this.state.customer}
                                     onChange={this.changeInputValue}
-                                    name="newCustomer"
+                                    name="customer"
                             >
-                                <option hidden={true} value= ''>
+                                <option hidden={false} value= ''>
                                     Выбрать клиента
                                 </option>
                                 {customers.map(customer =>
@@ -105,11 +110,11 @@ class AddNewInvoice extends Component {
                             </select>
                         </div>
                         <div className='form-group'>
-                            <label htmlFor='product_id' className='form-label col-xs-4'>Инструмент</label>
-                            <select className='form-control form-select col-xs-8' id='product_id'
-                                    value={this.state.newProduct}
+                            <label htmlFor='product_id' className='form-label label-add-invoice'>Инструмент</label>
+                            <select className='form-control form-select select-add-invoice' id='product_id'
+                                    value={this.state.product}
                                     onChange={this.changeInputValue}
-                                    name="newProduct"
+                                    name="product"
                             >
                                 <option hidden={false} value = '' >
                                     Выбрать Инструмент
@@ -123,10 +128,10 @@ class AddNewInvoice extends Component {
 
                         </div>
                         <FormGroup>
-                            <ControlLabel className="col-xs-4">Количество дней</ControlLabel>
-                            <FormControl type="text" placeholder="Количество дней" className="col-xs-8"
-                                         onChange={this.props.actChangeInputProductValue}
-                                         value={this.props.products.productPayment} name="amountDays"/>
+                            <ControlLabel className="label-add-invoice">Количество дней</ControlLabel>
+                            <FormControl type="text" placeholder="Количество дней" className="input-add-invoice"
+                                         onChange={this.changeInputValue}
+                                         value={this.state.days} name="days"/>
                         </FormGroup>
 
 

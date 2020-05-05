@@ -26,6 +26,14 @@
     border-color: #d9534f !important;
 }
 
+.table-button--check {
+    background-color: #5cb85c !important;
+    border-color: #5cb85c !important;
+}
+
 .modal-footer .btn {
         margin-bottom: 5px !important;
 }
+
+
+

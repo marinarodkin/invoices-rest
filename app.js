@@ -63,12 +63,24 @@ Invoice = sequelize.define('invoices', {
   customer_id: {
     type: Sequelize.INTEGER
   },
-  discount: {
-    type: Sequelize.DECIMAL
-  },
-  total: {
-    type: Sequelize.DECIMAL
-  }
+    customer: {
+        type: Sequelize.STRING
+    },
+    product: {
+        type: Sequelize.STRING
+    },
+   days: {
+        type: Sequelize.DECIMAL
+    },
+    deposit: {
+        type: Sequelize.DECIMAL
+    },
+   payment: {
+        type: Sequelize.DECIMAL
+    },
+    total: {
+        type: Sequelize.DECIMAL
+    }
 });
 
 InvoiceItem = sequelize.define('invoice_items', {
@@ -166,6 +178,66 @@ sequelize.sync({
       category: "Обработка материалов"
   });
 
+    Invoice.create({
+        id: 2134,
+        customer: "Вишняков Дмитрий Сергеевич",
+        product: "Виброплита DIAM ML 80/5.5 L",
+        deposit: 3000,
+        payment: 1000,
+        days: 3,
+        total: 3000
+    });
+
+    Invoice.create({
+        id: 2136,
+        customer: "Лепилин Дмитрий Михайлович",
+        product: "Генератор (бензиновый) FUBAG BS 6600",
+        deposit: 4000,
+        payment: 1500,
+        days: 1,
+        total: 1500
+    });
+
+    Invoice.create({
+        id: 2137,
+        customer: "Чайкин Анатолий Павлович",
+        product: "Удлинитель 50 м (КГ 3х1,5)",
+        deposit: 1000,
+        payment: 300,
+        days: 5,
+        total: 1500
+    });
+
+    Invoice.create({
+        id: 2138,
+        customer: "Проскурин Сергей Владимирович",
+        product: "Отбойный молоток Makita HM1203C",
+        deposit: 4000,
+        payment: 1200,
+        days: 2,
+        total: 2400
+    });
+
+    Invoice.create({
+        id: 2139,
+        customer: "Монасов Андрей Петрович",
+        product: "Паяльник для пластиковых труб Candan CM-03",
+        deposit: 3500,
+        payment: 1400,
+        days: 1,
+        total: 1400
+    });
+
+    Invoice.create({
+        id: 2135,
+        customer: "Шкилев Александр Певлович",
+        product: "Бензобур ADA GROUNDDRILL-9",
+        deposit: 5000,
+        payment: 2000,
+        days: 2,
+        total: 4000
+    });
+
 }).catch(function(e) {
   console.log("ERROR SYNCING WITH DB", e);
 });
@@ -223,7 +295,7 @@ app.route('/api/products')
     })
   })
   .post(function(req, res) {
-        var product = Product.build(_.pick(req.body, ['name', 'price', 'category', 'deposit', 'description', 'payment']));
+        var product = Product.build(_.pick(req.body, ['name', 'price', 'category', 'deposit', 'description', 'payment', 'total']));
     product.save().then(function(product){
       res.json(product);
     });
@@ -237,7 +309,7 @@ app.route('/api/products/:product_id')
   })
   .put(function(req, res) {
     Product.findById(req.params.product_id).then(function(product) {
-            product.update(_.pick(req.body, ['name', 'price', 'category', 'deposit', 'description', 'payment'])).then(function(product) {
+            product.update(_.pick(req.body, ['name', 'price', 'category', 'deposit', 'description', 'payment', , 'total'])).then(function(product) {
         res.json(product);
       });
     });
@@ -260,7 +332,7 @@ app.route('/api/invoices')
         })
     })
     .post(function(req, res) {
-        var invoice = Invoice.build(_.pick(req.body, ['customer_id', 'discount', 'total']));
+        var invoice = Invoice.build(_.pick(req.body, ['invoiceId', 'customer', 'product', 'days', 'deposit', 'payment', 'total']));
         invoice.save().then(function(invoice){
             res.json(invoice);
         });
@@ -274,7 +346,7 @@ app.route('/api/invoices/:invoice_id')
     })
     .put(function(req, res) {
         Invoice.findById(req.params.invoice_id).then(function(invoice) {
-            invoice.update(_.pick(req.body, ['customer_id', 'discount', 'total'])).then(function(invoice) {
+            invoice.update(_.pick(req.body, ['invoiceId', 'customer', 'product', 'days', 'deposit', 'payment', 'total'])).then(function(invoice) {
                 res.json(invoice);
             });
         });
