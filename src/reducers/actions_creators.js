@@ -105,12 +105,12 @@ export const fetchDeleteCustomers = (id) => {
 };
 
 export function fetchPutCustomersSuccessful(data) {
-  return { type: act.FETCH_PUT_CUSTOMERS_SUCCESSFUL, payload: {id: data.id, name: data.name, address: data.address, phone: data.phone}}
+  return { type: act.FETCH_PUT_CUSTOMERS_SUCCESSFUL, payload: {id: data.id, name: data.name, pass: data.pass, address: data.address, phone: data.phone}}
 }
 
-export const fetchPutCustomers = ({ id, name, address, phone }) => {
+export const fetchPutCustomers = ({ id, name, pass, address, phone }) => {
   return (dispatch) => {
-    return axios.post(`${config.SERVER_URI}/customers`, {id, name, address, phone} )
+    return axios.post(`${config.SERVER_URI}/customers`, {id, name, pass, address, phone} )
       .then(response => {
         if (response && response.data && response.status === 200) {
           dispatch(fetchPutCustomersSuccessful(response.data))
@@ -129,9 +129,9 @@ export function fetchEditCustomersSuccessful(data) {
 }
 
 export const fetchEditCustomers = (payload) => {
-  const {name, address, phone} = payload.newCustomer;
+  const {name, pass, address, phone} = payload.newCustomer;
   return (dispatch) => {
-    return axios.put(`${config.SERVER_URI}/customers/${payload.id}`, { name, address, phone } )
+    return axios.put(`${config.SERVER_URI}/customers/${payload.id}`, { name, pass, address, phone } )
       .then(response => {
         if (response && response.data && response.status === 200) {
           dispatch(fetchEditCustomersSuccessful(response.data))

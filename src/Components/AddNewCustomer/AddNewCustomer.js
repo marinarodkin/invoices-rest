@@ -14,16 +14,18 @@ import './styles.css';
 class AddNewCustomer extends Component {
   state = {
     customerName: '',
+    customerPass: '',
     customerAddress: '',
     customerPhone: ''
   };
 
 
   componentWillReceiveProps(nextProps) {
-    const { editingCustomer, customerName, customerAddress, customerPhone } = nextProps.customers;
+    const { editingCustomer, customerName, customerPass, customerAddress, customerPhone } = nextProps.customers;
     if (editingCustomer !== 0) {
       this.setState({
         customerName: customerName,
+        customerPass: customerPass,
         customerAddress: customerAddress,
         customerPhone: customerPhone
       });
@@ -40,11 +42,13 @@ class AddNewCustomer extends Component {
     event.preventDefault(event);
     const newCustomer = {
       name: this.state.customerName,
+      pass: this.state.customerPass,
       address: this.state.customerAddress,
       phone: this.state.customerPhone
     };
     this.setState({
       customerName: '',
+      customerPass: '',
       customerAddress: '',
       customerPhone: '',
     });
@@ -52,15 +56,17 @@ class AddNewCustomer extends Component {
   };
 
   addNewCustomer = () => (event) => {
-    const { customerName, customerAddress, customerPhone } = this.state;
+    const { customerName, customerPass, customerAddress, customerPhone } = this.state;
     event.preventDefault(event);
     const newCustomer = {
       name: customerName,
+      pass: customerPass,
       address: customerAddress,
       phone: customerPhone
     };
     this.setState({
       customerName: '',
+      customerPass: '',
       customerAddress: '',
       customerPhone: ''
     });
@@ -71,6 +77,7 @@ class AddNewCustomer extends Component {
   cancelEditing = () => {
     this.setState({
       customerName: '',
+      customerPass: '',
       customerAddress: '',
       customerPhone: ''
     });
@@ -86,31 +93,39 @@ class AddNewCustomer extends Component {
         <Modal show={this.props.customers.customerModalShow}
                onHide={this.props.actCustomerModalHide}>
           <Modal.Header>
-            <Modal.Title>Add New Customer</Modal.Title>
+            <Modal.Title>Добавить нового клиента</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           </Modal.Body>
           <Form className="add-form">
             <FormGroup>
-              <ControlLabel className="col-xs-4">Customer Name:</ControlLabel>
+              <ControlLabel className="col-xs-4">ФИО:</ControlLabel>
               <FormControl type="text"
-                           placeholder={this.props.customers.editingCustomer === 0 ? 'Input Customer Name' : this.props.customers.customerName}
+                           placeholder={this.props.customers.editingCustomer === 0 ? 'Введите ФИО клиента' : this.props.customers.customerName}
                            className="col-xs-8"
                            onChange={this.changeInputCustomerValue} value={this.state.customerName}
                            name="customerName"/>
             </FormGroup>
             <FormGroup>
-              <ControlLabel className="col-xs-4">Customer Address:</ControlLabel>
+              <ControlLabel className="col-xs-4">Паспорт:</ControlLabel>
               <FormControl type="text"
-                           placeholder={this.props.customers.editingCustomer === 0 ? 'Input Customer Address' : this.props.customers.customerAddress}
+                           placeholder={this.props.customers.editingCustomer === 0 ? 'Введите номер паспорта клиента' : this.props.customers.customerPass}
+                           className="col-xs-8"
+                           onChange={this.changeInputCustomerValue} value={this.state.customerPass}
+                           name="customerPass"/>
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel className="col-xs-4">Адрес:</ControlLabel>
+              <FormControl type="text"
+                           placeholder={this.props.customers.editingCustomer === 0 ? 'Введите адрес клиента' : this.props.customers.customerAddress}
                            className="col-xs-8"
                            onChange={this.changeInputCustomerValue} value={this.state.customerAddress}
                            name="customerAddress"/>
             </FormGroup>
             <FormGroup>
-              <ControlLabel className="col-xs-4">Customer Phone:</ControlLabel>
+              <ControlLabel className="col-xs-4">Телефон:</ControlLabel>
               <FormControl type="phone" className="col-xs-8"
-                           placeholder={this.props.customers.editingCustomer === 0 ? 'Input Customer Phone' : this.props.customers.customerPhone}
+                           placeholder={this.props.customers.editingCustomer === 0 ? 'Введите телефон клиента' : this.props.customers.customerPhone}
                            onChange={this.changeInputCustomerValue} value={this.state.customerPhone}
                            name="customerPhone"/>
             </FormGroup>
@@ -118,11 +133,10 @@ class AddNewCustomer extends Component {
             </div>
           </Form>
           <Modal.Footer>
-            <Button bsStyle="info" className="btn" onClick={this.cancelEditing}>Cancel</Button>
+            <Button bsStyle="info" className="btn" onClick={this.cancelEditing}>Отмена</Button>
             <Button bsStyle="info" className="btn"
                     onClick={this.props.customers.editingCustomer === 0 ? this.addNewCustomer() : this.finishEditCustomer(this.props.customers.editingCustomer)}
-                    disabled={this.state.customerName === '' || this.state.customerAddress === ''}>Save
-              Customer</Button>
+                    disabled={this.state.customerName === '' || this.state.customerAddress === ''}>Добавить клиента</Button>
           </Modal.Footer>
         </Modal>
       </div>

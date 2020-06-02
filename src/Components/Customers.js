@@ -47,6 +47,7 @@ class Customers extends Component {
             <tr>
               <th className="col-xs-1 text-center">#</th>
               <th className="col-xs-1 text-center">Клиент</th>
+              <th className="col-xs-1 text-center">Паспорт</th>
               <th className="col-xs-3 text-center">Адрес</th>
               <th className="col-xs-2 text-center">Телефон</th>
             </tr>
@@ -56,6 +57,7 @@ class Customers extends Component {
               <tr key={item.id}>
                 <td className="col-xs-1 text-center">{item.id}</td>
                 <td className="col-xs-3 text-center">{item.name}</td>
+                <td className="col-xs-3 text-center">{item.pass}</td>
                 <td className="col-xs-3 text-center">{item.address}</td>
                 <td className="col-xs-2 text-center">{item.phone}</td>
                 <td className="col-xs-1 border-none" >

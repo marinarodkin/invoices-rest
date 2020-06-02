@@ -4,6 +4,7 @@ const customerState = {
   /* customers */
   customers: [],
   customerName: '',
+  customerPass: '',
   customerAddress: '',
   customerPhone: '',
   customerModalShow: false,
@@ -25,6 +26,7 @@ export default function rdcCustomers(state = customerState, action) {
         ...state,
         customerModalShow: false,
         customerName: '',
+        customerPass: '',
         customerAddress: '',
         customerPhone: '',
         customerToEdit: {},
@@ -47,6 +49,7 @@ export default function rdcCustomers(state = customerState, action) {
         ...state,
         customers: newCustomers,
         customerName: '',
+        customerPass: '',
         customerAddress: '',
         customerPhone: '',
         customerModalShow: false
@@ -58,6 +61,7 @@ export default function rdcCustomers(state = customerState, action) {
         ...state,
         customerModalShow: true,
         customerName: customerToEdit.name,
+        customerPass: customerToEdit.pass,
         customerAddress: customerToEdit.address,
         customerPhone: customerToEdit.phone,
         customerToEdit: customerToEdit,
@@ -66,6 +70,7 @@ export default function rdcCustomers(state = customerState, action) {
     case act.FETCH_EDIT_CUSTOMERS_SUCCESSFUL:
       const toEditCustomer = customersCopy.find(item => item.id === action.payload.id);
       toEditCustomer.name = action.payload.name;
+      toEditCustomer.pass = action.payload.pass;
       toEditCustomer.address = action.payload.address;
       toEditCustomer.phone = action.payload.phone;
       return {
@@ -73,6 +78,7 @@ export default function rdcCustomers(state = customerState, action) {
         customers: customersCopy,
         customerModalShow: false,
         customerName: '',
+        customerPass: '',
         customerAddress: '',
         customerPhone: '',
         editingCustomer: 0

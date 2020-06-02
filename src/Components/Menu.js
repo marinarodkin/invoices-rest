@@ -21,7 +21,7 @@ class Menu extends Component {
                             <div className="collapse navbar-collapse" id="navbar-main">
 
                                 <ul className="nav navbar-nav">
-                                    <li><Link to='/'>Заказы</Link></li>
+                                    <li><Link to='/'>Активные заказы</Link></li>
                                     <li><Link to='/customers'>Клиенты</Link></li>
                                     <li><Link to='/products'>Инструменты</Link></li>
                                     <li><Link to='/history'>История Заказов</Link></li>

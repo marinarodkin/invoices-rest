@@ -20,6 +20,9 @@ Customer = sequelize.define('customers', {
   name: {
     type: Sequelize.STRING
   },
+    pass: {
+        type: Sequelize.STRING
+    },
   address: {
     type: Sequelize.STRING
   },
@@ -259,7 +262,7 @@ app.route('/api/customers')
     })
   })
   .post(function(req, res) {
-    var customer = Customer.build(_.pick(req.body, ['name', 'address', 'phone']));
+    var customer = Customer.build(_.pick(req.body, ['name', 'pass', 'address', 'phone']));
     customer.save().then(function(customer){
       res.json(customer);
     });
@@ -273,7 +276,7 @@ app.route('/api/customers/:customer_id')
     })
     .put(function(req, res) {
         Customer.findById(req.params.customer_id).then(function(customer) {
-            customer.update(_.pick(req.body, ['name', 'address', 'phone'])).then(function(customer) {
+            customer.update(_.pick(req.body, ['name', 'pass', 'address', 'phone'])).then(function(customer) {
                 res.json(customer);
             });
         });

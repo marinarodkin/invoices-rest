@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "dev": "rm -rf public/js/bundle.js & npm start & webpack --watch"
   },
   "name": "invoices",

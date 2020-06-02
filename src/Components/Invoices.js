@@ -8,6 +8,7 @@ import {
     fetchCustomers,
     fetchProducts,
     actInvoiceModalShow,
+    actCustomerModalShow,
 } from './../reducers/actions_creators';
 
 class Invoices extends Component {
@@ -44,13 +45,20 @@ class Invoices extends Component {
             <div className="" style={{marginTop: '20px'}}>
                 {isMenu ?
                     <div className="top-line top-line-inv">
-                        <div className=" title">Заказы</div>
+                        <div className=" title">Активные заказы</div>
+                        <Button
+                        className="col-xs-3 pull-right"
+                        bsStyle="info"
+                        onClick={this.props.actInvoiceModalShow}
+                    >
+                        Добавить заказ
+                    </Button>
                         <Button
                             className="col-xs-3 pull-right"
                             bsStyle="info"
-                            onClick={this.props.actInvoiceModalShow}
+                            onClick={this.props.actCustomerModalShow}
                         >
-                            Добавить заказ
+                            Добавить клиента
                         </Button>
                     </div>
                     :
@@ -127,6 +135,7 @@ const mapDispatchToProps = dispatch => {
         fetchCustomers: payload => dispatch(fetchCustomers(payload)),
         fetchProducts: payload => dispatch(fetchProducts(payload)),
         actInvoiceModalShow: payload => dispatch(actInvoiceModalShow(payload)),
+        actCustomerModalShow: payload => dispatch(actCustomerModalShow(payload)),
     };
 }
 
