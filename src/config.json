@@ -1,4 +1,4 @@
 {
-  "SERVER_URI": "http://localhost:8000/api",
+  "SERVER_URI": "https://rodkina.azurewebsites.net/api",
   "DEFAULT_PRODUCT_QUANTITY": 1
 }
