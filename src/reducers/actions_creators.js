@@ -99,7 +99,8 @@ export const fetchDeleteCustomers = (id) => {
         }
       })
       .catch(error => {
-        throw (error);
+        //throw (error);
+        console.log(error.response)
       });
   };
 };
