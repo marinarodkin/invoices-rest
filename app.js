@@ -108,7 +108,7 @@ sequelize.sync({
 }).then(function() {
   Customer.create({
     name: "Черепанов Василий Яковлевич",
-    address: "Мира 163-17",
+    address: "Мира 163-16",
     phone: "8-919-1181765"
   });
 
