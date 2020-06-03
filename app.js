@@ -4,7 +4,7 @@ var express = require('express'),
     path = require('path'),
     Sequelize = require('sequelize'),
     _ = require('lodash');
-
+var cors = require('cors')
 
 sequelize = new Sequelize('sqlite://' + path.join(__dirname, 'invoices.sqlite'), {
   dialect: 'sqlite',
@@ -252,16 +252,17 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors())
 
 // CUSTOMERS API
 
 app.route('/api/customers')
-  .get(function(req, res) {
+  .get(function(req, res, next) {
     Customer.findAll().then(function(customers) {
       res.json(customers);
     })
   })
-  .post(function(req, res) {
+  .post(function(req, res, next) {
     var customer = Customer.build(_.pick(req.body, ['name', 'pass', 'address', 'phone']));
     customer.save().then(function(customer){
       res.json(customer);
@@ -269,19 +270,19 @@ app.route('/api/customers')
   });
 
 app.route('/api/customers/:customer_id')
-    .get(function(req, res) {
+    .get(function(req, res, next) {
         Customer.findById(req.params.customer_id).then(function(customer) {
             res.json(customer);
         });
     })
-    .put(function(req, res) {
+    .put(function(req, res, next) {
         Customer.findById(req.params.customer_id).then(function(customer) {
             customer.update(_.pick(req.body, ['name', 'pass', 'address', 'phone'])).then(function(customer) {
                 res.json(customer);
             });
         });
     })
-    .delete(function(req, res) {
+    .delete(function(req, res, next) {
         Customer.findById(req.params.customer_id).then(function(customer) {
             customer.destroy().then(function(customer) {
                 res.json(customer);
